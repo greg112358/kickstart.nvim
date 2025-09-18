@@ -485,6 +485,7 @@ require('lazy').setup({
       { 'mason-org/mason.nvim', opts = {} },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+      'nvim-java/nvim-java',
 
       -- Useful status updates for LSP.
       { 'j-hui/fidget.nvim', opts = {} },
@@ -698,6 +699,27 @@ require('lazy').setup({
             },
           },
         },
+      }
+
+      require('java').setup {
+        --custom jdtls settings goes here
+        settings = {
+          java = {
+            configuration = {
+              runtimes = {
+                {
+                  name = 'JavaSE-21',
+                  path = '/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home',
+                  default = true,
+                },
+              },
+            },
+          },
+        },
+      }
+
+      require('lspconfig').jdtls.setup {
+        --your custom nvim-java configuration goes here
       }
 
       -- Ensure the servers and tools above are installed
