@@ -101,11 +101,11 @@ return {
     dap.adapters['pwa-node'] = {
       type = 'server',
       host = 'localhost',
-      port = '3000',
+      port = '${port}',
       executable = {
         command = 'node',
         -- 💀 Make sure to update this path to point to your installation
-        args = { '/Users/gregorywalker/Installs/js-debug/src/dapDebugServer.js', '3000' },
+        args = { '/Users/gregorywalker/Installs/js-debug/src/dapDebugServer.js', '${port}' },
       },
     }
 
@@ -114,12 +114,22 @@ return {
         type = 'pwa-node',
         request = 'launch',
         name = 'Launch dev script',
-        runtimeExecutable = 'npm',
+        runtimeExecutable = vim.fn.exepath 'npm',
         runtimeArgs = { 'run', 'dev' },
         cwd = '${workspaceFolder}',
       },
     }
 
+    dap.configurations.typescriptreact = {
+      {
+        type = 'pwa-node',
+        request = 'launch',
+        name = 'Launch dev script',
+        runtimeExecutable = vim.fn.exepath 'npm',
+        runtimeArgs = { 'run', 'dev' },
+        cwd = '${workspaceFolder}',
+      },
+    }
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
