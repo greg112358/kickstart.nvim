@@ -176,19 +176,16 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
-vim.keymap.set('n', '<leader>c', function()
+vim.keymap.set('n', '<leader>cn', function()
   require('todo-comments').jump_next()
 end, { desc = 'Next todo comment' })
 
-vim.keymap.set('n', '<leader>C', function()
+vim.keymap.set('n', '<leader>cp', function()
   require('todo-comments').jump_prev()
 end, { desc = 'Previous todo comment' })
 
+vim.keymap.set('n', '<leader>cl', '<cmd>TodoQuickFix<cr>', { desc = 'Open List of todo comments' })
 -- You can also specify a list of valid jump keywords
-
-vim.keymap.set('n', ']t', function()
-  require('todo-comments').jump_next { keywords = { 'ERROR', 'WARNING' } }
-end, { desc = 'Next error/warning todo comment' })
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -357,6 +354,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
+        { '<leader>c', group = '[C]omment TODOs' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
@@ -800,7 +798,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, java = true, typescript = true, javascript = true }
+        local disable_filetypes = { c = true, cpp = true, java = true, typescript = true, javascript = true, typescriptreact = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
