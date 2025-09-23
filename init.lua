@@ -176,6 +176,19 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+vim.keymap.set('n', '<leader>c', function()
+  require('todo-comments').jump_next()
+end, { desc = 'Next todo comment' })
+
+vim.keymap.set('n', '<leader>C', function()
+  require('todo-comments').jump_prev()
+end, { desc = 'Previous todo comment' })
+
+-- You can also specify a list of valid jump keywords
+
+vim.keymap.set('n', ']t', function()
+  require('todo-comments').jump_next { keywords = { 'ERROR', 'WARNING' } }
+end, { desc = 'Next error/warning todo comment' })
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -350,7 +363,15 @@ require('lazy').setup({
       },
     },
   },
-
+  {
+    'folke/todo-comments.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+  },
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything

@@ -103,9 +103,13 @@ return {
       host = 'localhost',
       port = '${port}',
       executable = {
-        command = 'node',
-        -- 💀 Make sure to update this path to point to your installation
-        args = { '/Users/gregorywalker/Installs/js-debug/src/dapDebugServer.js', '${port}' },
+        command = 'arch',
+        args = {
+          '-arm64',
+          '/usr/local/bin/node',
+          '/Users/gregorywalker/.local/share/nvim/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
+          '${port}',
+        },
       },
     }
 
@@ -114,8 +118,8 @@ return {
         type = 'pwa-node',
         request = 'launch',
         name = 'Launch dev script',
-        runtimeExecutable = vim.fn.exepath 'npm',
-        runtimeArgs = { 'run', 'dev' },
+        runtimeExecutable = 'arch',
+        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'dev' },
         cwd = '${workspaceFolder}',
       },
     }
@@ -125,8 +129,8 @@ return {
         type = 'pwa-node',
         request = 'launch',
         name = 'Launch dev script',
-        runtimeExecutable = vim.fn.exepath 'npm',
-        runtimeArgs = { 'run', 'dev' },
+        runtimeExecutable = 'arch',
+        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'dev' },
         cwd = '${workspaceFolder}',
       },
     }
