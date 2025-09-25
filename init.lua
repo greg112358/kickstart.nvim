@@ -354,6 +354,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
+        { '<leader>d', group = '[D]ebug' },
         { '<leader>c', group = '[C]omment TODOs' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
@@ -576,6 +577,7 @@ require('lazy').setup({
           map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
           map('grh', vim.lsp.buf.hover, '[G]oto [H]over Documentation')
+          map('grs', vim.lsp.buf.signature_help, '[G]oto [S]ignature Help Documentation')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
