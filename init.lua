@@ -174,7 +174,8 @@ vim.o.confirm = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list ([E]rrors)' })
+vim.keymap.set('n', '<leader>l', '<cmd>copen<CR>', { desc = 'Open [L]ocation list' })
 
 vim.keymap.set('n', '<leader>cn', function()
   require('todo-comments').jump_next()
