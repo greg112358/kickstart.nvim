@@ -174,8 +174,8 @@ vim.o.confirm = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list ([E]rrors)' })
-vim.keymap.set('n', '<leader>lo', '<cmd>copen<CR>', { desc = 'Open [L]ocation list' })
+vim.keymap.set('n', '<leader>le', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list ([E]rrors)' })
+vim.keymap.set('n', '<leader>ll', '<cmd>copen<CR>', { desc = 'Open [L]ocation list' })
 vim.keymap.set('n', '<leader>lc', '<cmd>cexpr []<CR>', { desc = 'Clear Location LIst' })
 
 vim.keymap.set('n', '<leader>cn', function()
@@ -356,6 +356,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
+        { '<leader>l', group = '[L]ist' },
         { '<leader>d', group = '[D]ebug' },
         { '<leader>c', group = '[C]omment TODOs' },
         { '<leader>s', group = '[S]earch' },
@@ -762,6 +763,8 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'prettier', -- Used to format JavaScript, TypeScript, JSON, CSS, HTML, etc.
+        'clang-format', -- Used to format Java, C, C++, etc.
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -814,6 +817,15 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        java = { 'clang-format' },
+        kotlin = { 'prettier' },
+        json = { 'prettier' },
+        css = { 'prettier' },
+        html = { 'prettier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --

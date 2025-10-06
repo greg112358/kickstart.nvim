@@ -144,6 +144,14 @@ return {
         runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'devManagement' },
         cwd = '${workspaceFolder}',
       },
+      {
+        type = 'pwa-node',
+        request = 'launch',
+        name = 'Run Tests',
+        runtimeExecutable = 'arch',
+        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'test' },
+        cwd = '${workspaceFolder}',
+      },
     }
 
     dap.configurations.typescriptreact = {
@@ -161,6 +169,14 @@ return {
         name = 'Launch dev management script',
         runtimeExecutable = 'arch',
         runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'devManagement' },
+        cwd = '${workspaceFolder}',
+      },
+      {
+        type = 'pwa-node',
+        request = 'launch',
+        name = 'Run Tests',
+        runtimeExecutable = 'arch',
+        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'test' },
         cwd = '${workspaceFolder}',
       },
     }
