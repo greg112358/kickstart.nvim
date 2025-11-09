@@ -48,7 +48,6 @@ local colors = {
 --- @param opts table Table containing fg, bg, sp, and style attributes
 local function highlight(group, opts)
   local cmd = 'highlight ' .. group
-
   if opts.fg then
     cmd = cmd .. ' guifg=' .. opts.fg
   end

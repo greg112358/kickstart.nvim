@@ -11,17 +11,17 @@ local M = {}
 -- ============================================================================
 local colors = {
   -- Backgrounds
-  bg_black = '#a3a3a3', -- Pure black main background
-  bg_dark = '#787878', -- Dark gray for cursor line
+  bg_black = '#9c9c9c', -- Pure black main background
+  bg_dark = '#828282', -- Dark gray for cursor line
   bg_light = '#606060', -- Lighter gray for selections
   bg_highlight = '#303030', -- Highlighted backgrounds
 
   -- Main text - all code in same gray
-  text_gray = '#1c1c1c', -- Main text color (silver)
+  text_gray = '#424242', -- Main text color (silver)
 
   -- Primitives & comments - distinguishable grays
   string_gray = '#000000', -- Strings (white)
-  comment_gray = '#1c1c1c', -- Comments (darker gray)
+  comment_gray = '#d9d9d9', -- Comments (darker gray)
 
   -- Borders
   subtle_gray = '#d9d9d9', -- Borders
@@ -120,16 +120,16 @@ function M.load()
   -- Cursor and lines
   highlight('Cursor', { fg = colors.bg_black, bg = colors.string_gray })
   highlight('CursorLine', { bg = colors.bg_dark })
-  highlight('CursorLineNr', { fg = colors.bg_black, bg = colors.text_gray })
+  highlight('CursorLineNr', { bg = colors.bg_dark })
   highlight('LineNr', { fg = colors.subtle_gray })
   highlight('CursorColumn', { bg = colors.bg_dark })
 
   -- Selection and search (inverted: dark text on light background)
-  highlight('Visual', { fg = colors.bg_black, bg = colors.text_gray })
-  highlight('VisualNOS', { fg = colors.bg_black, bg = colors.text_gray })
-  highlight('Search', { fg = colors.bg_black, bg = colors.border_gray })
+  highlight('Visual', { bg = colors.bg_light })
+  highlight('VisualNOS', { bg = colors.bg_light })
+  highlight('Search', { bg = colors.bg_light })
   highlight('IncSearch', { fg = colors.bg_black, bg = colors.string_gray })
-  highlight('CurSearch', { fg = colors.bg_black, bg = colors.string_gray })
+  highlight('CurSearch', { bg = colors.bg_light })
 
   -- Status line and tab line
   highlight('StatusLine', { fg = colors.text_gray, bg = colors.bg_light })
@@ -156,11 +156,11 @@ function M.load()
   highlight('WarningMsg', { fg = colors.warn_orange })
   highlight('Question', { fg = colors.info_blue })
 
-  -- Popup menu
-  highlight('Pmenu', { fg = colors.text_gray, bg = colors.bg_dark })
-  highlight('PmenuSel', { fg = colors.bg_black, bg = colors.text_gray })
+  -- Popup menu (inverted: unselected items are light, selected is dark)
+  highlight('Pmenu', { fg = colors.bg_black, bg = colors.text_gray })
+  highlight('PmenuSel', { fg = colors.string_gray, bg = colors.bg_dark })
   highlight('PmenuSbar', { bg = colors.bg_light })
-  highlight('PmenuThumb', { bg = colors.border_gray })
+  highlight('PmenuThumb', { bg = colors.bg_light })
 
   -- Diff highlighting
   highlight('DiffAdd', { fg = colors.git_add, bg = colors.bg_dark })
@@ -430,9 +430,9 @@ function M.load()
   highlight('@lsp.typemod.enumMember.public', { fg = colors.text_gray })
 
   -- LSP document highlights (word under cursor)
-  highlight('LspReferenceText', { fg = colors.bg_dark, bg = colors.text_gray })
-  highlight('LspReferenceRead', { fg = colors.bg_dark, bg = colors.text_gray })
-  highlight('LspReferenceWrite', { fg = colors.bg_dark, bg = colors.text_gray })
+  highlight('LspReferenceText', { bg = colors.bg_dark })
+  highlight('LspReferenceRead', { bg = colors.bg_dark })
+  highlight('LspReferenceWrite', { bg = colors.bg_dark })
 
   -- ============================================================================
   -- PLUGIN INTEGRATION
@@ -444,12 +444,13 @@ function M.load()
   highlight('GitSignsDelete', { fg = colors.git_delete })
 
   -- Telescope
+  highlight('LspReferenceText', { bg = colors.bg_light })
   highlight('TelescopeBorder', { fg = colors.border_gray })
-  highlight('TelescopeSelection', { fg = colors.bg_black, bg = colors.text_gray })
-  highlight('TelescopeSelectionCaret', { fg = colors.bg_black })
-  highlight('TelescopeMultiSelection', { fg = colors.bg_black, bg = colors.border_gray })
-  highlight('TelescopeMatching', { fg = colors.string_gray })
-  highlight('TelescopePromptPrefix', { fg = colors.text_gray })
+  highlight('TelescopeSelection', { bg = colors.bg_light })
+  highlight('TelescopeSelectionCaret', { bg = colors.bg_light })
+  highlight('TelescopeMultiSelection', { bg = colors.bg_light })
+  highlight('TelescopeMatching', { bg = colors.bg_light })
+  highlight('TelescopePromptPrefix', { bg = colors.bg_light })
 
   -- Neo-tree
   highlight('NeoTreeDirectoryIcon', { fg = colors.text_gray })
