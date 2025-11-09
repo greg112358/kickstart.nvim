@@ -193,6 +193,7 @@ vim.keymap.set('n', '<leader>cp', function()
 end, { desc = 'Previous todo comment' })
 
 vim.keymap.set('n', '<leader>cl', '<cmd>TodoQuickFix<cr>', { desc = 'Open List of todo comments' })
+
 -- You can also specify a list of valid jump keywords
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -548,6 +549,11 @@ require('lazy').setup({
       -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
       -- and elegantly composed help section, `:help lsp-vs-treesitter`
 
+      -- Suppress workspace/executeClientCommand error notifications
+      vim.lsp.handlers['workspace/executeClientCommand'] = function(_, result, ctx)
+        return result
+      end
+
       --  This function gets run when an LSP attaches to a particular buffer.
       --    That is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
@@ -653,7 +659,7 @@ require('lazy').setup({
           -- This may be unwanted, since they displace some of your code
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
             -- Enable inlay hints by default
-            vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+            vim.lsp.inlay_hint.enable(false, { bufnr = event.buf })
 
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
@@ -661,6 +667,16 @@ require('lazy').setup({
           end
         end,
       })
+      vim.keymap.set('n', '<leader>tt', function()
+        if vim.g.colors_name == 'grayscale' then
+          package.loaded['fuckblue'] = nil
+          require 'fuckblue'
+        elseif vim.g.colors_name == 'fuckblue' then
+          vim.cmd 'colorscheme tokyonight-night'
+        else
+          vim.cmd 'colorscheme grayscale'
+        end
+      end, { desc = '[T]oggle [T]heme' })
 
       -- Diagnostic Config
       -- See :help vim.diagnostic.Opts
@@ -735,8 +751,10 @@ require('lazy').setup({
         },
       }
 
-      require('java').setup {
-        --custom jdtls settings goes here
+      require('java').setup {}
+
+      require('lspconfig').jdtls.setup {
+        --your custom nvim-java configuration goes here
         settings = {
           java = {
             configuration = {
@@ -759,10 +777,6 @@ require('lazy').setup({
             },
           },
         },
-      }
-
-      require('lspconfig').jdtls.setup {
-        --your custom nvim-java configuration goes here
       }
 
       -- Ensure the servers and tools above are installed
@@ -970,7 +984,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'grayscale'
     end,
   },
 
