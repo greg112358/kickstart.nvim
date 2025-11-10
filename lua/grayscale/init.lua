@@ -180,7 +180,7 @@ function M.load()
   highlight('NonText', { fg = colors.subtle_gray })
   highlight('Whitespace', { fg = colors.bg_dark })
   highlight('Conceal', { fg = colors.subtle_gray })
-  highlight('MatchParen', { fg = colors.bg_black, bg = colors.string_gray })
+  highlight('MatchParen', { fg = colors.bg_black, bg = colors.hint_gray })
   highlight('WildMenu', { fg = colors.bg_black, bg = colors.text_gray })
 
   -- ============================================================================
