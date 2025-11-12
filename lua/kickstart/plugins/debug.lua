@@ -94,11 +94,12 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
+    require 'java'
 
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
-      automatic_installation = true,
+      automatic_installation = false,
 
       -- You can provide additional configuration to the handlers,
       -- see mason-nvim-dap README for more information

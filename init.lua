@@ -458,10 +458,10 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [f]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [g]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -489,6 +489,20 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      -- Search for hidden files
+      vim.keymap.set('n', '<leader>sF', function()
+        builtin.find_files { hidden = true }
+      end, { desc = '[S]earch [F]iles (including Hidden)' })
+
+      -- Grep through hidden files
+      vim.keymap.set('n', '<leader>sG', function()
+        builtin.live_grep {
+          additional_args = function()
+            return { '--hidden' }
+          end,
+        }
+      end, { desc = '[S]earch by [G]rep (including Hidden)' })
     end,
   },
 
@@ -751,7 +765,27 @@ require('lazy').setup({
         },
       }
 
-      require('java').setup {}
+      -- TEMPORARY FIX: nvim-java's default versions (0.40.1, 1.55.1) are outdated
+      -- and don't match Mason registry expectations, causing symlink errors.
+      -- TODO: Remove this entire block and replace with require('java').setup {}
+      -- once nvim-java updates their defaults to current versions.
+      -- Check: https://github.com/nvim-java/nvim-java/blob/main/lua/java/config.lua
+      require('java').setup {
+        java_test = {
+          enable = true,
+          version = '0.43.2',
+        },
+        spring_boot_tools = {
+          enable = true,
+          version = '1.59.0',
+        },
+        mason = {
+          registries = {
+            'github:mason-org/mason-registry',
+            'github:nvim-java/mason-registry',
+          },
+        },
+      }
 
       require('lspconfig').jdtls.setup {
         --your custom nvim-java configuration goes here
@@ -779,6 +813,14 @@ require('lazy').setup({
         },
       }
 
+      -- The following loop will configure each server with the capabilities we defined above.
+      -- This will ensure that all servers have the same base configuration, but also
+      -- allow for server-specific overrides.
+      for server_name, server_config in pairs(servers) do
+        server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
+        require('lspconfig')[server_name].setup(server_config)
+      end
+
       -- Ensure the servers and tools above are installed
       --
       -- To check the current status of installed tools and/or manually install
@@ -799,21 +841,6 @@ require('lazy').setup({
         'clang-format', -- Used to format Java, C, C++, etc.
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-      require('mason-lspconfig').setup {
-        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
-      }
     end,
   },
 

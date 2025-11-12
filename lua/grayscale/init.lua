@@ -233,10 +233,10 @@ function M.load()
   highlight('Debug', { fg = colors.error_red })
 
   -- Other
-  highlight('Underlined', { fg = colors.text_gray, style = 'underline' })
-  highlight('Ignore', { fg = colors.subtle_gray })
-  highlight('Error', { fg = colors.error_red, bg = colors.bg_dark })
-  highlight('Todo', { fg = colors.warn_orange, bg = colors.bg_dark })
+  --  highlight('Underlined', { fg = colors.text_gray, style = 'underline' })
+  --  highlight('Ignore', { fg = colors.subtle_gray })
+  --  highlight('Error', { fg = colors.error_red, bg = colors.bg_dark })
+  --  highlight('Todo', { fg = colors.warn_orange, bg = colors.bg_dark })
 
   -- ============================================================================
   -- TREESITTER HIGHLIGHTS
@@ -257,13 +257,12 @@ function M.load()
   highlight('@text.environment.name', { fg = colors.text_gray })
 
   -- Comments
-  highlight('@comment', { fg = colors.comment_gray })
-  highlight('@comment.documentation', { fg = colors.comment_gray })
-  highlight('@comment.error', { fg = colors.error_red })
-  highlight('@comment.warning', { fg = colors.warn_orange })
-  highlight('@comment.todo', { fg = colors.warn_orange })
-  highlight('@comment.note', { fg = colors.info_blue })
-
+  --  highlight('@comment', { fg = colors.comment_gray })
+  -- highlight('@comment.documentation', { fg = colors.comment_gray })
+  --highlight('@comment.error', { fg = colors.error_red })
+  --highlight('@comment.warning', { fg = colors.warn_orange })
+  --highlight('@comment.todo', { fg = colors.warn_orange })
+  --highlight('@comment.note', { fg = colors.info_blue })
   -- Constants
   highlight('@constant', { fg = colors.text_gray })
   highlight('@constant.builtin', { fg = colors.text_gray })
@@ -492,14 +491,14 @@ function M.load()
   highlight('IblScope', { fg = colors.subtle_gray })
 
   -- Todo comments
-  highlight('TodoFgTODO', { fg = colors.warn_orange })
-  highlight('TodoBgTODO', { fg = colors.bg_black, bg = colors.warn_orange })
-  highlight('TodoFgFIX', { fg = colors.error_red })
-  highlight('TodoBgFIX', { fg = colors.bg_black, bg = colors.error_red })
-  highlight('TodoFgNOTE', { fg = colors.info_blue })
-  highlight('TodoBgNOTE', { fg = colors.bg_black, bg = colors.info_blue })
-  highlight('TodoFgWARN', { fg = colors.warn_orange })
-  highlight('TodoBgWARN', { fg = colors.bg_black, bg = colors.warn_orange })
+  --  highlight('TodoFgTODO', { fg = colors.warn_orange })
+  --  highlight('TodoBgTODO', { fg = colors.bg_black, bg = colors.warn_orange })
+  --  highlight('TodoFgFIX', { fg = colors.error_red })
+  --  highlight('TodoBgFIX', { fg = colors.bg_black, bg = colors.error_red })
+  --  highlight('TodoFgNOTE', { fg = colors.info_blue })
+  --  highlight('TodoBgNOTE', { fg = colors.bg_black, bg = colors.info_blue })
+  --  highlight('TodoFgWARN', { fg = colors.warn_orange })
+  --  highlight('TodoBgWARN', { fg = colors.bg_black, bg = colors.warn_orange })
 
   -- Debugging
   highlight('DapBreakpoint', { fg = colors.error_red })
