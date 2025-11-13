@@ -80,7 +80,7 @@ return {
       function()
         require('dapui').toggle()
       end,
-      desc = 'Debug: Set Breakpoint',
+      desc = 'Debug: Toggle View',
     },
     -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     {

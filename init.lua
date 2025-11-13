@@ -682,13 +682,19 @@ require('lazy').setup({
         end,
       })
       vim.keymap.set('n', '<leader>tt', function()
-        if vim.g.colors_name == 'grayscale' then
+        if vim.g.colors_name == 'lightgrayscale' then
           package.loaded['fuckblue'] = nil
           require 'fuckblue'
         elseif vim.g.colors_name == 'fuckblue' then
           vim.cmd 'colorscheme tokyonight-night'
-        else
-          vim.cmd 'colorscheme grayscale'
+        elseif vim.g.colors_name == 'tokyonight-night' then
+          vim.cmd 'colorscheme tokyonight-moon'
+        elseif vim.g.colors_name == 'tokyonight-moon' then
+          package.loaded['grayscale'] = nil
+          require 'grayscale'
+        elseif vim.g.colors_name == 'grayscale' then
+          package.loaded['lightgrayscale'] = nil
+          require 'lightgrayscale'
         end
       end, { desc = '[T]oggle [T]heme' })
 
@@ -1001,17 +1007,7 @@ require('lazy').setup({
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'grayscale'
+      vim.cmd.colorscheme 'fuckblue'
     end,
   },
 
