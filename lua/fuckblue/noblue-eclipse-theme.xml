@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FuckBlue Eclipse Theme -->
+<colorTheme id="noblue" name="FuckBlue">
+  <!-- Editor colors -->
+  <searchResultIndication color="#ff8000" />
+  <filteredSearchResultIndication color="#b35900" />
+  <occurrenceIndication color="#3a3a3a" />
+  <writeOccurrenceIndication color="#4a4a4a" />
+  <findScope color="#a8a8a8" />
+  <selectionForeground color="#d4d4d4" />
+  <selectionBackground color="#3a3a3a" />
+  <background color="#000000" />
+  <currentLine color="#303030" />
+  <foreground color="#d4d4d4" />
+  <lineNumber color="#a8a8a8" />
+  <singleLineComment color="#b35900" italic="true"/>
+  <multiLineComment color="#b35900" italic="true"/>
+  <commentTaskTag color="#b35900" italic="true" bold="true"/>
+  <sourceHoverBackground color="#303030" />
+
+  <!-- Java syntax -->
+  <javadoc color="#b35900" italic="true"/>
+  <javadocLink color="#ff8000" underline="true"/>
+  <javadocTag color="#b35900" italic="true"/>
+  <javadocKeyword color="#b35900" italic="true"/>
+
+  <class color="#ff8000" />
+  <interface color="#ff8000" />
+  <method color="#ff8000" bold="true"/>
+  <methodDeclaration color="#ff8000" bold="true"/>
+  <bracket color="#b35900" />
+  <number color="#a8a8a8" />
+  <string color="#a8a8a8" />
+  <operator color="#ff8000" bold="true"/>
+  <keyword color="#b35900" />
+  <annotation color="#ff8000" />
+  <staticMethod color="#ff8000" bold="true"/>
+  <localVariable color="#ff8000" />
+  <localVariableDeclaration color="#ff8000" />
+  <field color="#ff8000" />
+  <staticField color="#ff8000" />
+  <staticFinalField color="#ff8000" />
+  <deprecatedMember color="#a8a8a8" strikethrough="true"/>
+  <enum color="#ff8000" />
+  <inheritedMethod color="#ff8000" bold="true"/>
+  <abstractMethod color="#ff8000" bold="true"/>
+  <parameterVariable color="#ff8000" />
+  <typeArgument color="#ff8000" />
+  <typeParameter color="#ff8000" />
+  <constant color="#ff8000" />
+
+  <!-- XML/HTML -->
+  <tagAttributeName color="#ff8000" />
+  <tagAttributeValue color="#a8a8a8" />
+
+  <!-- Search/Match highlighting -->
+  <matchingBracket box="true" color="#ff8000"/>
+  <matchingBracketEdge color="#ff8000" bold="true"/>
+
+  <!-- UI Colors -->
+  <console color="#d4d4d4" background="#000000"/>
+  <consoleError color="#fc3b00"/>
+  <consoleWarning color="#3bc4ff"/>
+  <consoleInfo color="#138c00"/>
+
+  <!-- Diff colors -->
+  <additionIndication color="#a9ff09"/>
+  <deletionIndication color="#fc3b00"/>
+  <changeIndication color="#ff8000"/>
+
+  <!-- Other -->
+  <variable color="#ff8000"/>
+  <builtin color="#ff8000"/>
+</colorTheme>

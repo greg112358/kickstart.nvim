@@ -42,8 +42,6 @@ local colors = {
 
   -- Primitives and git
   green = '#a9ff09', -- Git additions, success
-  --  yellow = '#fff800', -- Primitives (strings, numbers, booleans)
-  yellow = '#a8a8a8',
   -- Alerts
   reddish = '#e06c75', -- Reddish
   red_dark = '#fc3b00', -- Git deletions
@@ -96,7 +94,7 @@ function M.load()
     vim.cmd 'syntax reset'
   end
 
-  vim.g.colors_name = 'fuckblue'
+  vim.g.colors_name = 'noblue'
   vim.o.termguicolors = true
 
   -- Set cursor shape and color
@@ -114,7 +112,7 @@ function M.load()
   vim.g.terminal_color_0 = colors.bg_black
   vim.g.terminal_color_1 = colors.red_dark
   vim.g.terminal_color_2 = colors.green
-  vim.g.terminal_color_3 = colors.yellow
+  vim.g.terminal_color_3 = colors.silver
   vim.g.terminal_color_4 = colors.orange
   vim.g.terminal_color_5 = colors.pink
   vim.g.terminal_color_6 = colors.orange
@@ -122,7 +120,7 @@ function M.load()
   vim.g.terminal_color_8 = colors.gray
   vim.g.terminal_color_9 = colors.red_dark
   vim.g.terminal_color_10 = colors.green
-  vim.g.terminal_color_11 = colors.yellow
+  vim.g.terminal_color_11 = colors.silver
   vim.g.terminal_color_12 = colors.orange
   vim.g.terminal_color_13 = colors.pink
   vim.g.terminal_color_14 = colors.orange
@@ -134,15 +132,15 @@ function M.load()
 
   -- Base UI
   highlight('Normal', { fg = colors.light_gray, bg = colors.bg_black })
-  highlight('NormalFloat', { fg = colors.light_gray, bg = colors.bg_black })
+  highlight('NormalFloat', { fg = colors.light_gray, bg = colors.bg_dark })
   highlight('NormalNC', { fg = colors.light_gray, bg = colors.bg_black })
 
   -- Cursor and lines
 
-  highlight('TermCursor', { fg = colors.bg_dark, bg = colors.orange })
-  highlight('Cursor', { fg = colors.bg_black, bg = colors.orange })
-  highlight('lCursor', { fg = colors.bg_dark, bg = colors.orange })
-  highlight('CursorIME', { fg = colors.bg_dark, bg = colors.orange })
+  highlight('TermCursor', { fg = colors.basically_white, bg = colors.orange })
+  highlight('Cursor', { fg = colors.basically_white, bg = colors.orange })
+  highlight('lCursor', { fg = colors.basically_white, bg = colors.orange })
+  highlight('CursorIME', { fg = colors.basically_white, bg = colors.orange })
   highlight('CursorLine', { bg = colors.bg_dark })
   highlight('CursorLineNr', { fg = colors.orange, style = 'bold' })
   highlight('LineNr', { fg = colors.silver })
@@ -173,16 +171,16 @@ function M.load()
   highlight('FoldColumn', { fg = colors.silver, bg = colors.bg_black })
 
   -- Messages and prompts
-  highlight('MsgArea', { fg = colors.light_gray, bg = colors.bg_black })
-  highlight('ModeMsg', { fg = colors.info_green, style = 'bold' })
-  highlight('MoreMsg', { fg = colors.info_green })
-  highlight('ErrorMsg', { fg = colors.pink, style = 'bold' })
-  highlight('WarningMsg', { fg = colors.light_blue, style = 'bold' })
-  highlight('Question', { fg = colors.info_green })
+  highlight('MsgArea', { fg = colors.light_gray, bg = colors.bg_dark })
+  highlight('ModeMsg', { fg = colors.light_gray, style = 'bold' })
+  highlight('MoreMsg', { fg = colors.light_gray })
+  highlight('ErrorMsg', { fg = colors.red_dark, style = 'bold' })
+  highlight('WarningMsg', { fg = colors.reddish, style = 'bold' })
+  highlight('Question', { fg = colors.light_blue })
 
   -- Popup menu
-  highlight('Pmenu', { fg = colors.light_gray, bg = colors.gray_dark })
-  highlight('PmenuSel', { fg = colors.bg_black, bg = colors.orange })
+  highlight('Pmenu', { fg = colors.light_gray, bg = colors.bg_dark })
+  highlight('PmenuSel', { fg = colors.bg_highlight, bg = colors.bg_dark })
   highlight('PmenuSbar', { bg = colors.gray })
   highlight('PmenuThumb', { bg = colors.silver })
 
@@ -190,20 +188,20 @@ function M.load()
   highlight('DiffAdd', { fg = colors.green, bg = colors.gray_dark })
   highlight('DiffChange', { fg = colors.orange, bg = colors.gray_dark })
   highlight('DiffDelete', { fg = colors.red_dark, bg = colors.gray_dark })
-  highlight('DiffText', { fg = colors.yellow, bg = colors.gray_dark, style = 'bold' })
+  highlight('DiffText', { fg = colors.silver, bg = colors.gray_dark, style = 'bold' })
 
   -- Spell checking
-  highlight('SpellBad', { sp = colors.pink, style = 'undercurl' })
+  highlight('SpellBad', { sp = colors.red_dark, style = 'undercurl' })
   highlight('SpellCap', { sp = colors.light_blue, style = 'undercurl' })
-  highlight('SpellLocal', { sp = colors.orange, style = 'undercurl' })
-  highlight('SpellRare', { sp = colors.orange, style = 'undercurl' })
+  highlight('SpellLocal', { sp = colors.light_blue, style = 'undercurl' })
+  highlight('SpellRare', { sp = colors.light_blue, style = 'undercurl' })
 
   -- Special UI elements
   highlight('Directory', { fg = colors.orange })
   highlight('Title', { fg = colors.orange, style = 'bold' })
   highlight('SpecialKey', { fg = colors.faint_orange })
   highlight('NonText', { fg = colors.faint_orange })
-  highlight('Whitespace', { fg = colors.gray_dark })
+  highlight('Whitespace', { fg = colors.silver })
   highlight('Conceal', { fg = colors.gray })
   highlight('MatchParen', { fg = colors.orange, style = 'bold' })
   highlight('WildMenu', { fg = colors.bg_black, bg = colors.orange })
@@ -218,11 +216,11 @@ function M.load()
 
   -- Constants: Types use dark orange
   highlight('Constant', { fg = colors.orange })
-  highlight('String', { fg = colors.yellow }) -- Primitive
-  highlight('Character', { fg = colors.yellow }) -- Primitive
-  highlight('Number', { fg = colors.yellow }) -- Primitive
-  highlight('Boolean', { fg = colors.yellow }) -- Primitive
-  highlight('Float', { fg = colors.yellow }) -- Primitive
+  highlight('String', { fg = colors.silver }) -- Primitive
+  highlight('Character', { fg = colors.silver }) -- Primitive
+  highlight('Number', { fg = colors.silver }) -- Primitive
+  highlight('Boolean', { fg = colors.silver }) -- Primitive
+  highlight('Float', { fg = colors.silver }) -- Primitive
 
   -- Identifiers
   highlight('Identifier', { fg = colors.orange }) -- Variables
@@ -252,16 +250,16 @@ function M.load()
 
   -- Special
   highlight('Special', { fg = colors.orange })
-  highlight('SpecialChar', { fg = colors.yellow })
+  highlight('SpecialChar', { fg = colors.orange })
   highlight('Tag', { fg = colors.orange, style = 'bold' }) -- HTML/XML tags
   highlight('Delimiter', { fg = colors.faint_orange }) -- Brackets (faint)
-  highlight('Debug', { fg = colors.pink })
+  highlight('Debug', { fg = colors.light_blue })
 
   -- Other
   highlight('Underlined', { fg = colors.orange, style = 'underline' })
   highlight('Ignore', { fg = colors.gray })
-  highlight('Error', { fg = colors.pink, bg = colors.gray_dark, style = 'bold' })
-  highlight('Todo', { fg = colors.orange, bg = colors.gray_dark, style = 'bold,italic' })
+  highlight('Error', { fg = colors.red_dark, bg = colors.gray_dark, style = 'bold' })
+  highlight('Todo', { fg = colors.light_blue, bg = colors.gray_dark, style = 'bold,italic' })
 
   -- ============================================================================
   -- TREESITTER HIGHLIGHTS
@@ -274,40 +272,45 @@ function M.load()
   highlight('@text.underline', { style = 'underline' })
   highlight('@text.strike', { style = 'strikethrough' })
   highlight('@text.title', { fg = colors.orange, style = 'bold' })
-  highlight('@text.literal', { fg = colors.yellow })
+  highlight('@text.literal', { fg = colors.silver })
   highlight('@text.uri', { fg = colors.orange, style = 'underline' })
-  highlight('@text.math', { fg = colors.yellow })
+  highlight('@text.math', { fg = colors.silver })
   highlight('@text.reference', { fg = colors.orange })
-  highlight('@text.environment', { fg = colors.faint_orange })
+  highlight('@text.environment', { fg = colors.orange })
   highlight('@text.environment.name', { fg = colors.orange })
 
   -- Comments: Faint orange, italic
+  -- TODO: example
+  -- NOTE:
+  -- WARNING:
+  -- BUG:
+  --
   highlight('@comment', { fg = colors.faint_orange, style = 'italic' })
   highlight('@comment.documentation', { fg = colors.faint_orange, style = 'italic' })
-  highlight('@comment.error', { fg = colors.pink, style = 'bold' })
-  highlight('@comment.warning', { fg = colors.light_blue, style = 'bold' })
-  highlight('@comment.todo', { fg = colors.orange, style = 'bold,italic' })
-  highlight('@comment.note', { fg = colors.info_green, style = 'bold,italic' })
+  highlight('@comment.error', { fg = colors.red_dark, style = 'bold' })
+  highlight('@comment.warning', { fg = colors.reddish, style = 'bold' })
+  highlight('@comment.todo', { fg = colors.light_blue, style = 'bold,italic' })
+  highlight('@comment.note', { fg = colors.light_blue, style = 'bold,italic' })
 
   -- Constants: Dark orange for named constants
   highlight('@constant', { fg = colors.orange })
   highlight('@constant.builtin', { fg = colors.orange })
   highlight('@constant.macro', { fg = colors.orange })
 
-  -- Strings and characters: Yellow (primitives)
-  highlight('@string', { fg = colors.yellow })
-  highlight('@string.regex', { fg = colors.yellow })
+  -- Strings and characters: silver (primitives)
+  highlight('@string', { fg = colors.silver })
+  highlight('@string.regex', { fg = colors.silver })
   highlight('@string.escape', { fg = colors.orange })
-  highlight('@string.special', { fg = colors.yellow })
-  highlight('@character', { fg = colors.yellow })
-  highlight('@character.special', { fg = colors.yellow })
+  highlight('@string.special', { fg = colors.silver })
+  highlight('@character', { fg = colors.silver })
+  highlight('@character.special', { fg = colors.silver })
 
-  -- Numbers: Yellow (primitives)
-  highlight('@number', { fg = colors.yellow })
-  highlight('@number.float', { fg = colors.yellow })
+  -- Numbers: silver (primitives)
+  highlight('@number', { fg = colors.silver })
+  highlight('@number.float', { fg = colors.silver })
 
-  -- Booleans: Yellow (primitives)
-  highlight('@boolean', { fg = colors.yellow })
+  -- Booleans: silver (primitives)
+  highlight('@boolean', { fg = colors.silver })
 
   -- Functions: Bright orange, bold
   highlight('@function', { fg = colors.orange, style = 'bold' })
@@ -358,7 +361,7 @@ function M.load()
   vim.api.nvim_set_hl(0, '@property', { fg = colors.orange })
   vim.api.nvim_set_hl(0, '@field', { fg = colors.orange })
 
-  -- Attributes and annotations: Yellow-orange
+  -- Attributes and annotations: silver-orange
   highlight('@attribute', { fg = colors.orange })
   highlight('@annotation', { fg = colors.orange })
 
@@ -378,24 +381,24 @@ function M.load()
   highlight('@conceal', { link = 'Conceal' })
 
   -- Markup (Markdown)
-  highlight('@markup.strong', { fg = colors.grey_white, style = 'bold' })
-  highlight('@markup.italic', { fg = colors.light_gray, style = 'italic' })
-  highlight('@markup.underline', { style = 'underline' })
-  highlight('@markup.strike', { style = 'strikethrough' })
+  highlight('@markup.strong', { fg = colors.orange, style = 'bold' })
+  highlight('@markup.italic', { fg = colors.orange, style = 'italic' })
+  highlight('@markup.underline', { fg = colors.orange, style = 'underline' })
+  highlight('@markup.strike', { fg = colors.orange, style = 'strikethrough' })
   highlight('@markup.heading', { fg = colors.orange, style = 'bold' })
-  highlight('@markup.heading.1', { fg = colors.orange, style = 'bold' })
-  highlight('@markup.heading.2', { fg = colors.orange, style = 'bold' })
-  highlight('@markup.heading.3', { fg = colors.orange, style = 'bold' })
-  highlight('@markup.heading.4', { fg = colors.orange, style = 'bold' })
-  highlight('@markup.heading.5', { fg = colors.orange, style = 'bold' })
-  highlight('@markup.heading.6', { fg = colors.orange, style = 'bold' })
+  highlight('@markup.heading.1', { fg = colors.orange, style = '' })
+  highlight('@markup.heading.2', { fg = colors.orange, style = 'bold,underline' })
+  highlight('@markup.heading.3', { fg = colors.orange, style = 'bold,underline' })
+  highlight('@markup.heading.4', { fg = colors.orange, style = 'bold,underline' })
+  highlight('@markup.heading.5', { fg = colors.orange, style = 'bold,underline' })
+  highlight('@markup.heading.6', { fg = colors.orange, style = 'bold,underline' })
   highlight('@markup.quote', { fg = colors.silver, style = 'italic' })
-  highlight('@markup.math', { fg = colors.yellow })
+  highlight('@markup.math', { fg = colors.silver })
   highlight('@markup.link', { fg = colors.orange, style = 'underline' })
   highlight('@markup.link.label', { fg = colors.orange })
-  highlight('@markup.link.url', { fg = colors.orange, style = 'underline' })
-  highlight('@markup.raw', { fg = colors.yellow })
-  highlight('@markup.raw.block', { fg = colors.yellow })
+  highlight('@markup.link.url', { fg = colors.light_blue, style = 'underline' })
+  highlight('@markup.raw', { fg = colors.orange })
+  highlight('@markup.raw.block', { fg = colors.orange })
   highlight('@markup.list', { fg = colors.orange })
   highlight('@markup.list.checked', { fg = colors.info_green })
   highlight('@markup.list.unchecked', { fg = colors.silver })
@@ -474,37 +477,37 @@ function M.load()
   highlight('TelescopePromptPrefix', { fg = colors.orange })
 
   -- Neo-tree
-  highlight('NeoTreeDirectoryIcon', { fg = colors.orange })
+  highlight('NeoTreeDirectoryIcon', { fg = colors.silver })
   highlight('NeoTreeDirectoryName', { fg = colors.orange })
-  highlight('NeoTreeFileName', { fg = colors.light_gray })
+  highlight('NeoTreeFileName', { fg = colors.orange })
   highlight('NeoTreeFileIcon', { fg = colors.silver })
   highlight('NeoTreeGitAdded', { fg = colors.green })
-  highlight('NeoTreeGitModified', { fg = colors.orange })
+  highlight('NeoTreeGitModified', { fg = colors.light_blue })
   highlight('NeoTreeGitDeleted', { fg = colors.red_dark })
-  highlight('NeoTreeGitUntracked', { fg = colors.silver })
+  highlight('NeoTreeGitUntracked', { fg = colors.light_blue })
 
   -- Which-key
   highlight('WhichKey', { fg = colors.orange })
   highlight('WhichKeyGroup', { fg = colors.orange })
-  highlight('WhichKeyDesc', { fg = colors.light_gray })
+  highlight('WhichKeyDesc', { fg = colors.orange })
   highlight('WhichKeySeparator', { fg = colors.silver })
-  highlight('WhichKeyFloat', { bg = colors.gray_dark })
+  highlight('WhichKeyFloat', { bg = colors.bg_dark })
 
-  -- Diagnostics: Info green, warnings light blue, errors pink
-  highlight('DiagnosticError', { fg = colors.light_blue })
-  highlight('DiagnosticWarn', { fg = colors.basically_white })
-  highlight('DiagnosticInfo', { fg = colors.basically_white })
-  highlight('DiagnosticHint', { fg = colors.orange })
-  highlight('DiagnosticUnderlineError', { sp = colors.light_blue, style = 'undercurl' })
-  highlight('DiagnosticUnderlineWarn', { sp = colors.basically_white, style = 'undercurl' })
+  -- Diagnostics: Info light blue, warnings reddish, errors red
+  highlight('DiagnosticError', { fg = colors.red_dark })
+  highlight('DiagnosticWarn', { fg = colors.reddish })
+  highlight('DiagnosticInfo', { fg = colors.light_blue })
+  highlight('DiagnosticHint', { fg = colors.light_blue })
+  highlight('DiagnosticUnderlineError', { sp = colors.red_dark, style = 'undercurl' })
+  highlight('DiagnosticUnderlineWarn', { sp = colors.reddish, style = 'undercurl' })
   highlight('DiagnosticUnderlineInfo', { sp = colors.light_blue, style = 'undercurl' })
-  highlight('DiagnosticUnderlineHint', { sp = colors.orange, style = 'undercurl' })
+  highlight('DiagnosticUnderlineHint', { sp = colors.light_blue, style = 'undercurl' })
 
   -- Completion
   highlight('CmpItemAbbrMatch', { fg = colors.orange, style = 'bold' })
   highlight('CmpItemAbbrMatchFuzzy', { fg = colors.orange })
   highlight('CmpItemKindFunction', { fg = colors.orange })
-  highlight('CmpItemKindMethod', { fg = colors.orange })
+  highlight('CmpItemKindMethod', { fg = colors.orange, style = 'bold' })
   highlight('CmpItemKindVariable', { fg = colors.orange })
   highlight('CmpItemKindKeyword', { fg = colors.faint_orange })
   highlight('CmpItemKindClass', { fg = colors.orange })
@@ -512,25 +515,29 @@ function M.load()
   highlight('CmpItemKindText', { fg = colors.light_gray })
 
   -- Indent guides
-  highlight('IndentBlanklineChar', { fg = colors.gray_dark })
+  highlight('IndentBlanklineChar', { fg = colors.gray })
   highlight('IndentBlanklineContextChar', { fg = colors.gray })
-  highlight('IblIndent', { fg = colors.gray_dark })
+  highlight('IblIndent', { fg = colors.gray })
   highlight('IblScope', { fg = colors.gray })
 
   -- Todo comments
-  highlight('TodoFgTODO', { fg = colors.orange })
-  highlight('TodoBgTODO', { fg = colors.bg_black, bg = colors.orange })
-  highlight('TodoFgFIX', { fg = colors.pink })
-  highlight('TodoBgFIX', { fg = colors.bg_black, bg = colors.pink })
-  highlight('TodoFgNOTE', { fg = colors.info_green })
-  highlight('TodoBgNOTE', { fg = colors.bg_black, bg = colors.info_green })
-  highlight('TodoFgWARN', { fg = colors.light_blue })
-  highlight('TodoBgWARN', { fg = colors.bg_black, bg = colors.light_blue })
+  -- TODO: example of a thin
+  -- NOTE: a nother thing
+  -- WARNING: akdjfkdjf
+  -- BUG: afjdkfjdkjf
+  highlight('TodoFgTODO', { fg = colors.light_blue }) -- TODO: test
+  highlight('TodoBgTODO', { fg = colors.bg_black, bg = colors.light_blue }) -- NOTE: fjkdjfk
+  highlight('TodoFgFIX', { fg = colors.red_dark })
+  highlight('TodoBgFIX', { fg = colors.bg_black, bg = colors.red_dark })
+  highlight('TodoFgNOTE', { fg = colors.light_blue })
+  highlight('TodoBgNOTE', { fg = colors.bg_black, bg = colors.light_blue })
+  highlight('TodoFgWARN', { fg = colors.reddish })
+  highlight('TodoBgWARN', { fg = colors.bg_black, bg = colors.reddish })
 
   -- Debugging
-  highlight('DapBreakpoint', { fg = colors.red_dark })
-  highlight('DapStopped', { fg = colors.green })
-  highlight('DapLogPoint', { fg = colors.orange })
+  highlight('DapBreakpoint', { fg = colors.light_blue })
+  highlight('DapStopped', { fg = colors.red_dark })
+  highlight('DapLogPoint', { fg = colors.reddish })
 end
 
 -- ============================================================================

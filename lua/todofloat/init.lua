@@ -41,7 +41,7 @@ local function calculate_position(position)
 end
 
 local function win_config(opts)
-  local width = math.min(math.floor(vim.o.columns * opts.width), 64)
+  local width = math.min(math.floor(vim.o.columns * opts.width), 69) --nice
   local height = math.floor(vim.o.lines * opts.height)
 
   local posx, posy = calculate_position(opts.position)
@@ -82,6 +82,7 @@ local function open_floating_file(opts)
   vim.bo[buf].swapfile = false
 
   win = vim.api.nvim_open_win(buf, true, win_config(opts))
+  vim.wo[win].winhighlight = 'Normal:Normal,FloatBorder:FloatBorder'
 
   vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '', {
     noremap = true,
