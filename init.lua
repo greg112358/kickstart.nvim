@@ -169,6 +169,8 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+vim.o.spell = true
+vim.o.spelllang = 'en_us'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -364,11 +366,18 @@ require('lazy').setup({
       spec = {
         { '<leader>l', group = '[L]ist' },
         { '<leader>d', group = '[D]ebug' },
-        { '<leader>c', group = '[C]omment TODOs' },
+        { '<leader>c', group = '[C]omment' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
+    },
+  },
+  -- add this to your lua/plugins.lua, lua/plugins/init.lua,  or the file you keep your other plugins:
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      -- add any options here
     },
   },
   {
@@ -448,6 +457,7 @@ require('lazy').setup({
           },
         },
       }
+      require('Comment').setup()
 
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
@@ -685,9 +695,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>td', ':Td<CR>', { silent = true, desc = '[T]oggle To [D]o' })
       vim.keymap.set('n', '<leader>tt', function()
         if vim.g.colors_name == 'lightgrayscale' then
-          package.loaded['fuckblue'] = nil
-          require 'fuckblue'
-        elseif vim.g.colors_name == 'fuckblue' then
+          package.loaded['noblue'] = nil
+          require 'noblue'
+        elseif vim.g.colors_name == 'noblue' then
           vim.cmd 'colorscheme tokyonight-night'
         elseif vim.g.colors_name == 'tokyonight-night' then
           vim.cmd 'colorscheme tokyonight-moon'
@@ -1009,7 +1019,7 @@ require('lazy').setup({
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      vim.cmd.colorscheme 'fuckblue'
+      vim.cmd.colorscheme 'noblue'
     end,
   },
 

@@ -1,8 +1,6 @@
 -- ============================================================================
--- FuckBlue - A Sophisticated Orange-Focused Neovim Colorscheme
+-- No Blue-
 -- ============================================================================
--- A sophisticated colorscheme with black backgrounds, silver borders,
--- and varying shades of orange for code differentiation.
 
 local M = {}
 
