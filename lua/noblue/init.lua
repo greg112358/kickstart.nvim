@@ -41,8 +41,8 @@ local colors = {
   -- Primitives and git
   green = '#a9ff09', -- Git additions, success
   -- Alerts
-  reddish = '#e06c75', -- Reddish
-  red_dark = '#fc3b00', -- Git deletions
+  reddish = '#ff6b9c', -- amber
+  red_dark = '#ff0000', -- Git deletions
   amber = '#ffd86e', -- Amber
 }
 
@@ -173,7 +173,7 @@ function M.load()
   highlight('ModeMsg', { fg = colors.light_gray, style = 'bold' })
   highlight('MoreMsg', { fg = colors.light_gray })
   highlight('ErrorMsg', { fg = colors.red_dark, style = 'bold' })
-  highlight('WarningMsg', { fg = colors.reddish, style = 'bold' })
+  highlight('WarningMsg', { fg = colors.amber, style = 'bold' })
   highlight('Question', { fg = colors.light_blue })
 
   -- Popup menu
@@ -286,7 +286,7 @@ function M.load()
   highlight('@comment', { fg = colors.faint_orange, style = 'italic' })
   highlight('@comment.documentation', { fg = colors.faint_orange, style = 'italic' })
   highlight('@comment.error', { fg = colors.red_dark, style = 'bold' })
-  highlight('@comment.warning', { fg = colors.reddish, style = 'bold' })
+  highlight('@comment.warning', { fg = colors.amber, style = 'bold' })
   highlight('@comment.todo', { fg = colors.light_blue, style = 'bold,italic' })
   highlight('@comment.note', { fg = colors.light_blue, style = 'bold,italic' })
 
@@ -491,13 +491,13 @@ function M.load()
   highlight('WhichKeySeparator', { fg = colors.silver })
   highlight('WhichKeyFloat', { bg = colors.bg_dark })
 
-  -- Diagnostics: Info light blue, warnings reddish, errors red
+  -- Diagnostics: Info light blue, warnings amber, errors red
   highlight('DiagnosticError', { fg = colors.red_dark })
-  highlight('DiagnosticWarn', { fg = colors.reddish })
+  highlight('DiagnosticWarn', { fg = colors.amber })
   highlight('DiagnosticInfo', { fg = colors.light_blue })
   highlight('DiagnosticHint', { fg = colors.light_blue })
   highlight('DiagnosticUnderlineError', { sp = colors.red_dark, style = 'undercurl' })
-  highlight('DiagnosticUnderlineWarn', { sp = colors.reddish, style = 'undercurl' })
+  highlight('DiagnosticUnderlineWarn', { sp = colors.amber, style = 'undercurl' })
   highlight('DiagnosticUnderlineInfo', { sp = colors.light_blue, style = 'undercurl' })
   highlight('DiagnosticUnderlineHint', { sp = colors.light_blue, style = 'undercurl' })
 
@@ -529,13 +529,13 @@ function M.load()
   highlight('TodoBgFIX', { fg = colors.bg_black, bg = colors.red_dark })
   highlight('TodoFgNOTE', { fg = colors.light_blue })
   highlight('TodoBgNOTE', { fg = colors.bg_black, bg = colors.light_blue })
-  highlight('TodoFgWARN', { fg = colors.reddish })
-  highlight('TodoBgWARN', { fg = colors.bg_black, bg = colors.reddish })
+  highlight('TodoFgWARN', { fg = colors.amber })
+  highlight('TodoBgWARN', { fg = colors.bg_black, bg = colors.amber })
 
   -- Debugging
   highlight('DapBreakpoint', { fg = colors.light_blue })
   highlight('DapStopped', { fg = colors.red_dark })
-  highlight('DapLogPoint', { fg = colors.reddish })
+  highlight('DapLogPoint', { fg = colors.amber })
 end
 
 -- ============================================================================

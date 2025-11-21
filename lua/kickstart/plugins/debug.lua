@@ -122,7 +122,9 @@ return {
         args = {
           '-arm64',
           '/usr/local/bin/node',
-          '/Users/gregorywalker/.local/share/nvim/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
+          --'/Users/gregorywalker/.local/share/nvim/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
+          --          '/Users/gregorywalker/Installs/js-debug/src/dapDebugServer.js',
+          '/Users/gregorywalker/Downloads/js-debug 2/src/dapDebugServer.js',
           '${port}',
         },
       },

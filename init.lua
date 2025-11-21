@@ -136,7 +136,7 @@ vim.o.smartcase = true
 vim.o.signcolumn = 'yes'
 
 -- Decrease update time
-vim.o.updatetime = 750
+vim.o.updatetime = 1500 -- Increased from 750 to reduce CursorHold triggers
 
 -- Decrease mapped sequence wait time
 vim.o.timeoutlen = 300
@@ -169,7 +169,7 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
-vim.o.spell = true
+vim.o.spell = false -- Disabled to improve performance
 vim.o.spelllang = 'en_us'
 
 -- [[ Basic Keymaps ]]
@@ -180,7 +180,8 @@ vim.o.spelllang = 'en_us'
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>le', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list ([E]rrors)' })
+vim.keymap.set('n', '<leader>le', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list ([e]rrors current buffer)' })
+vim.keymap.set('n', '<leader>lE', vim.diagnostic.setqflist, { desc = 'Open diagnostic [Q]uickfix list (project [E]rrors)' })
 vim.keymap.set('n', '<leader>ll', '<cmd>copen<CR>', { desc = 'Open [L]ocation list' })
 vim.keymap.set('n', '<leader>lc', '<cmd>cexpr []<CR>', { desc = 'Clear Location LIst' })
 
@@ -655,7 +656,7 @@ require('lazy').setup({
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+            --[[  vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
               group = highlight_augroup,
               callback = vim.lsp.buf.document_highlight,
@@ -673,7 +674,7 @@ require('lazy').setup({
                 vim.lsp.buf.clear_references()
                 vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
               end,
-            })
+            })--]]
           end
 
           -- The following code creates a keymap to toggle inlay hints in your
