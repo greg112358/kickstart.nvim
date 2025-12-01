@@ -684,16 +684,30 @@ require('lazy').setup({
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
             -- Enable inlay hints by default
             vim.lsp.inlay_hint.enable(false, { bufnr = event.buf })
-
-            map('<leader>th', function()
+            map('<leader>ti', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-            end, '[T]oggle Inlay [H]ints')
+            end, '[T]oggle [I]nlay Hints')
           end
         end,
       })
+
       local todo_float = require 'todofloat'
       todo_float.setup { target_file = '~/code/todo.md' }
-      vim.keymap.set('n', '<leader>td', ':Td<CR>', { silent = true, desc = '[T]oggle To [D]o' })
+      vim.keymap.set('n', '<leader>td', function()
+        todo_float.setup { target_file = '~/code/todo.md' }
+        vim.cmd 'Td'
+      end, { silent = true, desc = '[T]oggle To [D]o' })
+
+      vim.keymap.set('n', '<leader>th', function()
+        todo_float.setup { target_file = '~/code/helper.md' }
+        vim.cmd 'Td'
+      end, { silent = true, desc = '[T]oggle [H]elper' })
+
+      vim.keymap.set('n', '<leader>tz', function()
+        todo_float.setup { target_file = '~/code/zig.md' }
+        vim.cmd 'Td'
+      end, { silent = true, desc = '[T]oggle [Z]ig Cheatsheet' })
+
       vim.keymap.set('n', '<leader>tt', function()
         if vim.g.colors_name == 'lightgrayscale' then
           package.loaded['noblue'] = nil

@@ -379,27 +379,53 @@ function M.load()
   highlight('@conceal', { link = 'Conceal' })
 
   -- Markup (Markdown)
-  highlight('@markup.strong', { fg = colors.orange, style = 'bold' })
-  highlight('@markup.italic', { fg = colors.orange, style = 'italic' })
-  highlight('@markup.underline', { fg = colors.orange, style = 'underline' })
-  highlight('@markup.strike', { fg = colors.orange, style = 'strikethrough' })
-  highlight('@markup.heading', { fg = colors.orange, style = 'bold' })
-  highlight('@markup.heading.1', { fg = colors.orange, style = '' })
-  highlight('@markup.heading.2', { fg = colors.orange, style = 'bold,underline' })
-  highlight('@markup.heading.3', { fg = colors.orange, style = 'bold,underline' })
-  highlight('@markup.heading.4', { fg = colors.orange, style = 'bold,underline' })
-  highlight('@markup.heading.5', { fg = colors.orange, style = 'bold,underline' })
-  highlight('@markup.heading.6', { fg = colors.orange, style = 'bold,underline' })
-  highlight('@markup.quote', { fg = colors.silver, style = 'italic' })
-  highlight('@markup.math', { fg = colors.silver })
-  highlight('@markup.link', { fg = colors.orange, style = 'underline' })
-  highlight('@markup.link.label', { fg = colors.orange })
+  -- Text styles
+  highlight('@markup.strong', { fg = colors.grey_white, style = 'bold' })
+  highlight('@markup.italic', { fg = colors.light_gray, style = 'italic' })
+  highlight('@markup.underline', { fg = colors.light_gray, style = 'underline' })
+  highlight('@markup.strike', { fg = colors.gray_light, style = 'strikethrough' })
+
+  -- Headings with hierarchy
+  highlight('@markup.heading', { fg = colors.red_orange, style = 'bold' })
+  highlight('@markup.heading.1', { fg = colors.red_orange, style = 'bold' })
+  highlight('@markup.heading.2', { fg = colors.orange, style = 'bold' })
+  highlight('@markup.heading.3', { fg = colors.orange, style = 'bold' })
+  highlight('@markup.heading.4', { fg = colors.faint_orange, style = 'bold' })
+  highlight('@markup.heading.5', { fg = colors.faint_orange })
+  highlight('@markup.heading.6', { fg = colors.faint_orange })
+
+  -- Quotes and content blocks
+  highlight('@markup.quote', { fg = colors.silver, style = 'italic', bg = colors.gray_dark })
+  highlight('@markup.math', { fg = colors.green, bg = colors.gray_dark })
+
+  -- Links
+  highlight('@markup.link', { fg = colors.light_blue, style = 'underline' })
+  highlight('@markup.link.label', { fg = colors.light_blue, style = 'bold' })
   highlight('@markup.link.url', { fg = colors.light_blue, style = 'underline' })
-  highlight('@markup.raw', { fg = colors.orange })
-  highlight('@markup.raw.block', { fg = colors.orange })
+
+  -- Code blocks
+  highlight('@markup.raw', { fg = colors.green, bg = colors.gray_dark })
+  highlight('@markup.raw.block', { fg = colors.green, bg = colors.gray_dark })
+  highlight('@markup.raw.markdown_inline', { fg = colors.green, bg = colors.gray_dark })
+
+  -- Lists
   highlight('@markup.list', { fg = colors.orange })
-  highlight('@markup.list.checked', { fg = colors.info_green })
+  highlight('@markup.list.checked', { fg = colors.info_green, style = 'bold' })
   highlight('@markup.list.unchecked', { fg = colors.silver })
+  highlight('@markup.list.markdown', { fg = colors.orange })
+
+  -- Additional markdown elements
+  highlight('@markup.environment', { fg = colors.orange })
+  highlight('@markup.environment.name', { fg = colors.orange, style = 'bold' })
+  highlight('@markup', { fg = colors.light_gray })
+
+  -- Markdown-specific
+  highlight('@text.title.markdown', { fg = colors.red_orange, style = 'bold' })
+  highlight('@text.literal.markdown', { fg = colors.green, bg = colors.gray_dark })
+  highlight('@text.literal.markdown_inline', { fg = colors.green, bg = colors.gray_dark })
+  highlight('@text.uri.markdown', { fg = colors.light_blue, style = 'underline' })
+  highlight('@punctuation.special.markdown', { fg = colors.faint_orange })
+  highlight('@text.quote.markdown', { fg = colors.silver, style = 'italic', bg = colors.gray_dark })
 
   -- Diff
   highlight('@diff.plus', { fg = colors.green })
