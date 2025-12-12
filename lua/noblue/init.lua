@@ -26,6 +26,7 @@ local colors = {
   gray_light = '#4a4a4a', -- Light gray
 
   -- Borders: Whiteish gray/silver
+  gray_light_border = '#4a4a4a', -- Light gray
   light_gray = '#d4d4d4', -- Light gray border
   silver = '#a8a8a8', -- Silver border
   grey_white = '#e8e8e8', -- Almost white
@@ -539,10 +540,10 @@ function M.load()
   highlight('CmpItemKindText', { fg = colors.light_gray })
 
   -- Indent guides
-  highlight('IndentBlanklineChar', { fg = colors.gray })
-  highlight('IndentBlanklineContextChar', { fg = colors.gray })
-  highlight('IblIndent', { fg = colors.gray })
-  highlight('IblScope', { fg = colors.gray })
+  highlight('IndentBlanklineChar', { fg = colors.gray_light_border })
+  highlight('IndentBlanklineContextChar', { fg = colors.gray_light_border })
+  highlight('IblIndent', { fg = colors.gray_light_border })
+  highlight('IblScope', { fg = colors.gray_light_border })
 
   -- Todo comments
   -- TODO: example of a thin

@@ -268,7 +268,10 @@ rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
+  {
+    'NMAC427/guess-indent.nvim',
+    enabled = false, -- Disabled: was causing unpredictable tab behavior
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -303,6 +306,14 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+  },
+  {
+    'akinsho/flutter-tools.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'stevearc/dressing.nvim',
+    },
+    config = true,
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -796,6 +807,11 @@ require('lazy').setup({
             },
           },
         },
+        zls = {
+          cmd = { 'zls' },
+          filetypes = { 'zig', 'zir' },
+          single_file_support = true,
+        },
       }
 
       -- TEMPORARY FIX: nvim-java's default versions (0.40.1, 1.55.1) are outdated
@@ -986,9 +1002,8 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
-
-        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-        --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+        ['<Tab>'] = {},
+        ['<S-Tab>'] = {},
       },
 
       appearance = {
@@ -1098,6 +1113,7 @@ require('lazy').setup({
         'vimdoc',
         'java',
         'kotlin',
+        'zig',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
