@@ -812,6 +812,15 @@ require('lazy').setup({
           filetypes = { 'zig', 'zir' },
           single_file_support = true,
         },
+        elixirls = {
+          filetypes = { 'elixir', 'eex', 'heex', 'surface' },
+          settings = {
+            elixirLS = {
+              dialyzerEnabled = true,
+              fetchDeps = false,
+            },
+          },
+        },
       }
 
       -- TEMPORARY FIX: nvim-java's default versions (0.40.1, 1.55.1) are outdated
@@ -934,6 +943,9 @@ require('lazy').setup({
         json = { 'prettier' },
         css = { 'prettier' },
         html = { 'prettier' },
+        elixir = { 'mix' },
+        heex = { 'mix' },
+        eex = { 'mix' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -1114,6 +1126,9 @@ require('lazy').setup({
         'java',
         'kotlin',
         'zig',
+        'elixir',
+        'heex',
+        'eex',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
