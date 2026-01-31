@@ -10,7 +10,7 @@ M.ts = function()
     s('afun', { t 'const ', i(1, 'name'), t { ' = () => {', '\t', '}' } }),
     s('iface', { t 'interface ', i(1, 'Name'), t { ' {', '\t', '}' } }),
     s('dtype', { t 'type ', i(1, 'Name'), t ' = ' }),
-    s('imp', { t "import { ", i(1), t " } from '", i(2, 'module'), t "'" }),
+    s('imp', { t 'import { ', i(1), t " } from '", i(2, 'module'), t "'" }),
     s('log', { t 'console.log(', i(1), t ')' }),
     s('fore', { t '.forEach((', i(1, 'item'), t { ') => {', '\t', '})' } }),
     s('map', { t '.map((', i(1, 'item'), t { ') => {', '\t', '})' } }),
@@ -26,8 +26,8 @@ M.js = function()
   return {
     s('dfun', { t 'function ', i(1, 'name'), t { '() {', '\t', '}' } }),
     s('afun', { t 'const ', i(1, 'name'), t { ' = () => {', '\t', '}' } }),
-    s('imp', { t "import { ", i(1), t " } from '", i(2, 'module'), t "'" }),
-    s('req', { t "const ", i(1, 'mod'), t " = require('", i(2, 'module'), t "')" }),
+    s('imp', { t 'import { ', i(1), t " } from '", i(2, 'module'), t "'" }),
+    s('req', { t 'const ', i(1, 'mod'), t " = require('", i(2, 'module'), t "')" }),
     s('log', { t 'console.log(', i(1), t ')' }),
     s('fore', { t '.forEach((', i(1, 'item'), t { ') => {', '\t', '})' } }),
     s('map', { t '.map((', i(1, 'item'), t { ') => {', '\t', '})' } }),
@@ -46,7 +46,7 @@ M.typescriptreact = function()
     s('ur', { t 'const ', i(1, 'ref'), t ' = useRef(', i(2, 'null'), t ')' }),
     s('um', { t { 'const ', '' }, i(1, 'value'), t { ' = useMemo(() => {', '\treturn ' }, i(2), t { '', '}, [', '' }, i(3), t '])' }),
     s('uc', { t { 'const ', '' }, i(1, 'fn'), t { ' = useCallback((' }, i(2), t { ') => {', '\t' }, i(3), t { '', '}, [', '' }, i(4), t '])' }),
-    s('cn', { t "className={", i(1), t '}' }),
+    s('cn', { t 'className={', i(1), t '}' }),
     s('frag', { t { '<>', '\t' }, i(1), t { '', '</>' } }),
     s('map', { t '{', i(1, 'items'), t '.map((', i(2, 'item'), t { ') => (', '\t' }, i(3), t { '', '))}' } }),
     s('cond', { t '{', i(1, 'condition'), t ' && (', i(2), t ')}' }),
@@ -83,7 +83,7 @@ M.lua = function()
     s('for', { t 'for ', i(1, 'i'), t ' = ', i(2, '1'), t ', ', i(3, '10'), t { ' do', '\t' }, i(4), t { '', 'end' } }),
     s('forp', { t 'for ', i(1, 'k'), t ', ', i(2, 'v'), t ' in pairs(', i(3, 'tbl'), t { ') do', '\t' }, i(4), t { '', 'end' } }),
     s('fori', { t 'for ', i(1, 'i'), t ', ', i(2, 'v'), t ' in ipairs(', i(3, 'tbl'), t { ') do', '\t' }, i(4), t { '', 'end' } }),
-    s('req', { t "local ", i(1, 'mod'), t " = require '", i(2, 'module'), t "'" }),
+    s('req', { t 'local ', i(1, 'mod'), t " = require '", i(2, 'module'), t "'" }),
     s('mod', { t { 'local M = {}', '', '' }, i(1), t { '', '', 'return M' } }),
     s('pr', { t 'print(', i(1), t ')' }),
   }
@@ -102,6 +102,11 @@ M.elixir = function()
     s('doc', { t { '@doc """', '' }, i(1), t { '', '"""' } }),
     s('test', { t 'test "', i(1, 'description'), t { '" do', '\t' }, i(2), t { '', 'end' } }),
     s('desc', { t 'describe "', i(1, 'description'), t { '" do', '\t' }, i(2), t { '', 'end' } }),
+    s('spec', { t '@spec ', i(1, 'name'), t '(', i(2), t ') :: ', i(3, 'term()') }),
+    s('type', { t '@type ', i(1, 'name'), t ' :: ', i(2, 'term()') }),
+    s('typep', { t '@typep ', i(1, 'name'), t ' :: ', i(2, 'term()') }),
+    s('opaque', { t '@opaque ', i(1, 'name'), t ' :: ', i(2, 'term()') }),
+    s('cb', { t '@callback ', i(1, 'name'), t '(', i(2), t ') :: ', i(3, 'term()') }),
   }
 end
 
