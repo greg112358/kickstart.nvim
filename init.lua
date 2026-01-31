@@ -813,6 +813,7 @@ require('lazy').setup({
           single_file_support = true,
         },
         elixirls = {
+          cmd = { 'elixir-ls' },
           filetypes = { 'elixir', 'eex', 'heex', 'surface' },
           settings = {
             elixirLS = {
@@ -979,12 +980,47 @@ require('lazy').setup({
           --    https://github.com/rafamadriz/friendly-snippets
           -- {
           --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
           -- },
         },
         opts = {},
+        config = function()
+          require('luasnip.loaders.from_vscode').lazy_load()
+          local luasnip = require 'luasnip'
+
+          local function load_snippets()
+            luasnip.cleanup()
+            local snippets = require 'snippets'
+            luasnip.add_snippets('elixir', snippets.elixir())
+            luasnip.add_snippets('javascript', snippets.js())
+            luasnip.add_snippets('typescript', snippets.ts())
+            luasnip.add_snippets('typescriptreact', snippets.typescriptreact())
+            luasnip.add_snippets('html', snippets.html())
+            luasnip.add_snippets('lua', snippets.lua())
+            luasnip.add_snippets('java', snippets.java())
+            luasnip.add_snippets('zig', snippets.zig())
+            local snippets_path = vim.fn.getcwd() .. '/snippets.lua'
+            if vim.fn.filereadable(snippets_path) == 1 then
+              local ok, project_snippets = pcall(dofile, snippets_path)
+              if ok and project_snippets then
+                for ft, fn in pairs(project_snippets) do
+                  if type(fn) == 'function' then
+                    luasnip.add_snippets(ft, fn())
+                  end
+                end
+              else
+                --vim.notify('Failed to load .snippets: ' .. tostring(project_snippets), vim.log.levels.WARN)
+              end
+            end
+          end
+
+          load_snippets()
+
+          vim.keymap.set('n', '<leader>rs', function()
+            package.loaded['snippets'] = nil
+            load_snippets()
+            vim.notify('Snippets reloaded', vim.log.levels.INFO)
+          end, { desc = '[R]efresh [S]nippets' })
+        end,
       },
       'folke/lazydev.nvim',
     },
@@ -1014,8 +1050,8 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
-        ['<Tab>'] = {},
-        ['<S-Tab>'] = {},
+        ['<Tab>'] = { 'snippet_forward', 'fallback' },
+        ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
       },
 
       appearance = {
@@ -1027,7 +1063,7 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
       },
 
       sources = {
