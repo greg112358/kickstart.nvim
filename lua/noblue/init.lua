@@ -359,6 +359,9 @@ function M.load()
   -- Ensure these don't get linked elsewhere
   vim.api.nvim_set_hl(0, '@property', { fg = colors.orange })
   vim.api.nvim_set_hl(0, '@field', { fg = colors.orange })
+  --  vim.api.nvim_set_hl(0, 'LspReferenceText', { bg = colors.orange })
+  -- vim.api.nvim_set_hl(0, 'LspReferenceRead', { bg = colors.orange })
+  --vim.api.nvim_set_hl(0, 'LspReferenceWrite', { bg = colors.orange })
 
   -- Attributes and annotations: silver-orange
   highlight('@attribute', { fg = colors.orange })
