@@ -97,6 +97,11 @@ vim.g.have_nerd_font = false
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+-- Disable synchronized output (mode 2026): tmux advertises it but the held
+-- frames never get flushed in Terminal.app/iTerm2, leaving the screen blank
+-- until cursor movement forces per-line redraws
+vim.o.termsync = false
+
 -- Make line numbers default
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -850,7 +855,7 @@ require('lazy').setup({
         },
       }
 
-      require('lspconfig').jdtls.setup {
+      vim.lsp.config('jdtls', {
         --your custom nvim-java configuration goes here
         settings = {
           java = {
@@ -874,14 +879,16 @@ require('lazy').setup({
             },
           },
         },
-      }
+      })
+      vim.lsp.enable 'jdtls'
 
       -- The following loop will configure each server with the capabilities we defined above.
       -- This will ensure that all servers have the same base configuration, but also
       -- allow for server-specific overrides.
       for server_name, server_config in pairs(servers) do
         server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
-        require('lspconfig')[server_name].setup(server_config)
+        vim.lsp.config(server_name, server_config)
+        vim.lsp.enable(server_name)
       end
 
       -- Ensure the servers and tools above are installed
@@ -1147,6 +1154,7 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
