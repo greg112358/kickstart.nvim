@@ -130,9 +130,9 @@ function M.load()
   -- ============================================================================
 
   -- Base UI
-  highlight('Normal', { fg = colors.light_gray, bg = colors.bg_black })
-  highlight('NormalFloat', { fg = colors.light_gray, bg = colors.bg_dark })
-  highlight('NormalNC', { fg = colors.light_gray, bg = colors.bg_black })
+  highlight('Normal', { fg = colors.orange, bg = colors.bg_black })
+  highlight('NormalFloat', { fg = colors.orange, bg = colors.bg_dark })
+  highlight('NormalNC', { fg = colors.orange, bg = colors.bg_black })
 
   -- Cursor and lines
 
@@ -265,7 +265,7 @@ function M.load()
   -- ============================================================================
 
   -- Text
-  highlight('@text', { fg = colors.light_gray })
+  highlight('@text', { fg = colors.orange })
   highlight('@text.strong', { fg = colors.grey_white, style = 'bold' })
   highlight('@text.emphasis', { fg = colors.light_gray, style = 'italic' })
   highlight('@text.underline', { style = 'underline' })
@@ -421,7 +421,7 @@ function M.load()
   -- Additional markdown elements
   highlight('@markup.environment', { fg = colors.orange })
   highlight('@markup.environment.name', { fg = colors.orange, style = 'bold' })
-  highlight('@markup', { fg = colors.light_gray })
+  highlight('@markup', { fg = colors.orange })
 
   -- Markdown-specific
   highlight('@text.title.markdown', { fg = colors.red_orange, style = 'bold' })

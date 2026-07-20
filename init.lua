@@ -169,7 +169,7 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
-vim.o.spell = false -- Disabled to improve performance
+vim.o.spell = true
 vim.o.spelllang = 'en_us'
 
 -- [[ Basic Keymaps ]]
@@ -223,6 +223,17 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', '<S-l>', '<cmd>bnext<CR>', { desc = 'Next buffer' })
 vim.keymap.set('n', '<S-h>', '<cmd>bprev<CR>', { desc = 'Previous buffer' })
 
+-- Spell check commands
+vim.keymap.set('n', '<leader>zs', 'z=', { desc = 'Show [S]pelling suggestions' })
+vim.keymap.set('n', '<leader>zg', 'zg', { desc = 'Add word to dictionary ([G]ood)' })
+vim.keymap.set('n', '<leader>zw', 'zw', { desc = 'Mark word as misspelled ([W]rong)' })
+vim.keymap.set('n', '<leader>zn', ']s', { desc = '[N]ext misspelled word' })
+vim.keymap.set('n', '<leader>zp', '[s', { desc = '[P]revious misspelled word' })
+vim.keymap.set('n', '<leader>zu', 'zug', { desc = '[U]ndo add to dictionary' })
+vim.keymap.set('n', '<leader>zc', function()
+  vim.cmd 'normal! 1z='
+end, { desc = 'Auto-[C]orrect with first suggestion' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -231,6 +242,28 @@ vim.keymap.set('n', '<S-h>', '<cmd>bprev<CR>', { desc = 'Previous buffer' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
+
+-- Auto-reload files changed outside of Neovim (e.g. after git pull)
+vim.o.autoread = true
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
+  desc = 'Reload file if changed on disk',
+  group = vim.api.nvim_create_augroup('auto-reload', { clear = true }),
+  callback = function()
+    if vim.fn.mode() ~= 'c' then
+      vim.cmd 'checktime'
+    end
+  end,
+})
+
+-- Render markdown formatting (italic, bold, etc.)
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'markdown',
+  desc = 'Enable markdown concealment for rendered formatting',
+  group = vim.api.nvim_create_augroup('markdown-render', { clear = true }),
+  callback = function()
+    vim.o.conceallevel = 2
+  end,
+})
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -311,6 +344,14 @@ require('lazy').setup({
       },
     },
   },
+
+  { -- Centers the buffer with padding on both sides, for prose/word-processor style writing
+    'shortcuts/no-neck-pain.nvim',
+    version = '*',
+    opts = {
+      width = 115,
+    },
+  },
   {
     'akinsho/flutter-tools.nvim',
     dependencies = {
@@ -386,6 +427,7 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>z', group = 'Spell Check' },
       },
     },
   },
@@ -740,6 +782,32 @@ require('lazy').setup({
         end
       end, { desc = '[T]oggle [T]heme' })
 
+      vim.keymap.set('n', '<leader>ts', function()
+        vim.o.spell = not vim.o.spell
+      end, { desc = '[T]oggle [S]pell check' })
+
+      vim.g.prose_mode = false
+      vim.keymap.set('n', '<leader>tp', function()
+        vim.g.prose_mode = not vim.g.prose_mode
+        require('no-neck-pain').toggle()
+        if vim.g.prose_mode then
+          vim.o.wrap = true
+          vim.o.linebreak = true
+          vim.o.textwidth = 90
+          vim.o.number = false
+          vim.o.relativenumber = false
+          vim.o.signcolumn = 'no'
+          vim.o.list = false
+        else
+          vim.o.linebreak = false
+          vim.o.textwidth = 0
+          vim.o.number = true
+          vim.o.relativenumber = true
+          vim.o.signcolumn = 'yes'
+          vim.o.list = true
+        end
+      end, { desc = '[T]oggle [P]rose mode (word-processor style writing)' })
+
       -- Diagnostic Config
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
@@ -875,7 +943,7 @@ require('lazy').setup({
           },
         },
       }
-      vim.lsp.enable('jdtls')
+      vim.lsp.enable 'jdtls'
 
       -- The following loop will configure each server with the capabilities we defined above.
       -- This will ensure that all servers have the same base configuration, but also
