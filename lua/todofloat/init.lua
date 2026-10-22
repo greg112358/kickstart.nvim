@@ -41,7 +41,7 @@ local function calculate_position(position)
 end
 
 local function win_config(opts)
-  local width = math.min(math.floor(vim.o.columns * opts.width), 69) --nice
+  local width = math.min(math.floor(vim.o.columns * opts.width), 99) --nice
   local height = math.floor(vim.o.lines * opts.height)
 
   local posx, posy = calculate_position(opts.position)

@@ -96,6 +96,18 @@ return {
     local dapui = require 'dapui'
     require 'java'
 
+    -- nvim-dap reads .vscode/launch.json relative to the cwd (see dap.ext.vscode
+    -- getconfigs -> getcwd()). That silently contributes nothing when nvim wasn't
+    -- launched from the project root, leaving only nvim-java's env-less config.
+    -- Override the provider to find launch.json from the current buffer's root.
+    dap.providers.configs['dap.launch.json'] = function(bufnr)
+      local fname = vim.api.nvim_buf_get_name(bufnr)
+      local root = fname ~= '' and vim.fs.root(fname, '.vscode') or nil
+      local path = (root or vim.fn.getcwd()) .. '/.vscode/launch.json'
+      local ok, configs = pcall(require('dap.ext.vscode').getconfigs, path)
+      return ok and configs or {}
+    end
+
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
@@ -118,13 +130,10 @@ return {
       host = 'localhost',
       port = '${port}',
       executable = {
-        command = 'arch',
+        command = '/opt/homebrew/bin/node',
         args = {
-          '-arm64',
-          '/usr/local/bin/node',
-          --'/Users/gregorywalker/.local/share/nvim/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
-          --          '/Users/gregorywalker/Installs/js-debug/src/dapDebugServer.js',
-          '/Users/gregorywalker/Downloads/js-debug 2/src/dapDebugServer.js',
+          -- Installed via :MasonInstall js-debug-adapter
+          vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
           '${port}',
         },
       },
@@ -135,24 +144,24 @@ return {
         type = 'pwa-node',
         request = 'launch',
         name = 'Launch dev script',
-        runtimeExecutable = 'arch',
-        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'dev' },
+        runtimeExecutable = '/opt/homebrew/bin/npm',
+        runtimeArgs = { 'run', 'dev' },
         cwd = '${workspaceFolder}',
       },
       {
         type = 'pwa-node',
         request = 'launch',
         name = 'Launch dev management script',
-        runtimeExecutable = 'arch',
-        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'devManagement' },
+        runtimeExecutable = '/opt/homebrew/bin/npm',
+        runtimeArgs = { 'run', 'devManagement' },
         cwd = '${workspaceFolder}',
       },
       {
         type = 'pwa-node',
         request = 'launch',
         name = 'Run Tests',
-        runtimeExecutable = 'arch',
-        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'test' },
+        runtimeExecutable = '/opt/homebrew/bin/npm',
+        runtimeArgs = { 'run', 'test' },
         cwd = '${workspaceFolder}',
       },
     }
@@ -162,24 +171,24 @@ return {
         type = 'pwa-node',
         request = 'launch',
         name = 'Launch dev script',
-        runtimeExecutable = 'arch',
-        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'dev' },
+        runtimeExecutable = '/opt/homebrew/bin/npm',
+        runtimeArgs = { 'run', 'dev' },
         cwd = '${workspaceFolder}',
       },
       {
         type = 'pwa-node',
         request = 'launch',
         name = 'Launch dev management script',
-        runtimeExecutable = 'arch',
-        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'devManagement' },
+        runtimeExecutable = '/opt/homebrew/bin/npm',
+        runtimeArgs = { 'run', 'devManagement' },
         cwd = '${workspaceFolder}',
       },
       {
         type = 'pwa-node',
         request = 'launch',
         name = 'Run Tests',
-        runtimeExecutable = 'arch',
-        runtimeArgs = { '-arm64', '/usr/local/bin/npm', 'run', 'test' },
+        runtimeExecutable = '/opt/homebrew/bin/npm',
+        runtimeArgs = { 'run', 'test' },
         cwd = '${workspaceFolder}',
       },
     }

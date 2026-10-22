@@ -215,8 +215,8 @@ function M.load()
 
   -- Constants: Types use dark orange
   highlight('Constant', { fg = colors.orange })
-  highlight('String', { fg = colors.silver }) -- Primitive
-  highlight('Character', { fg = colors.silver }) -- Primitive
+  highlight('String', { fg = colors.basically_white }) -- Primitive
+  highlight('Character', { fg = colors.basically_white }) -- Primitive
   highlight('Number', { fg = colors.silver }) -- Primitive
   highlight('Boolean', { fg = colors.silver }) -- Primitive
   highlight('Float', { fg = colors.silver }) -- Primitive
@@ -296,13 +296,13 @@ function M.load()
   highlight('@constant.builtin', { fg = colors.orange })
   highlight('@constant.macro', { fg = colors.orange })
 
-  -- Strings and characters: silver (primitives)
-  highlight('@string', { fg = colors.silver })
-  highlight('@string.regex', { fg = colors.silver })
+  -- Strings and characters: white (primitives)
+  highlight('@string', { fg = colors.basically_white })
+  highlight('@string.regex', { fg = colors.basically_white })
   highlight('@string.escape', { fg = colors.orange })
-  highlight('@string.special', { fg = colors.silver })
-  highlight('@character', { fg = colors.silver })
-  highlight('@character.special', { fg = colors.silver })
+  highlight('@string.special', { fg = colors.basically_white })
+  highlight('@character', { fg = colors.basically_white })
+  highlight('@character.special', { fg = colors.basically_white })
 
   -- Numbers: silver (primitives)
   highlight('@number', { fg = colors.silver })

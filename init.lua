@@ -133,6 +133,9 @@ vim.o.breakindent = true
 -- Save undo history
 vim.o.undofile = true
 
+-- Reload files that changed on disk (e.g. after a git branch switch)
+vim.o.autoread = true
+
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -245,6 +248,44 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.hl.on_yank()
+  end,
+})
+
+-- Check for external file changes so buffers refresh after a git branch switch.
+--  `autoread` only reloads when Neovim actually runs a timestamp check, which it
+--  doesn't do on its own while you sit in a buffer. These events force the check.
+local checktime_group = vim.api.nvim_create_augroup('kickstart-checktime', { clear = true })
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI', 'TermClose', 'TermLeave' }, {
+  desc = 'Reload buffers changed on disk (e.g. after switching git branches)',
+  group = checktime_group,
+  callback = function()
+    -- `checktime` errors in command-line window; guard against it.
+    if vim.fn.getcmdwintype() == '' then
+      vim.cmd 'checktime'
+    end
+  end,
+})
+
+-- Let you know when a buffer was reloaded out from under you.
+vim.api.nvim_create_autocmd('FileChangedShellPost', {
+  desc = 'Notify when a file was reloaded after an external change',
+  group = checktime_group,
+  callback = function()
+    vim.notify('File changed on disk, buffer reloaded', vim.log.levels.WARN)
+  end,
+})
+
+-- Beef (https://www.beeflang.org). No tree-sitter grammar exists; its syntax is
+-- close enough to C# that the c_sharp parser gives usable highlighting.
+vim.filetype.add { extension = { bf = 'beef' } }
+vim.treesitter.language.register('c_sharp', 'beef')
+vim.api.nvim_create_autocmd('FileType', {
+  desc = 'Beef buffer options',
+  group = vim.api.nvim_create_augroup('kickstart-beef', { clear = true }),
+  pattern = 'beef',
+  callback = function()
+    vim.bo.commentstring = '// %s'
+    vim.bo.cindent = true
   end,
 })
 
@@ -844,7 +885,11 @@ require('lazy').setup({
           version = '0.43.2',
         },
         spring_boot_tools = {
-          enable = true,
+          -- Disabled: the 1.59.0 language server ships as a Spring Boot exec jar
+          -- whose main class (BootLanguageServerBootApp) lives in BOOT-INF/classes,
+          -- which nvim-java's launcher can't resolve -> "Client spring-boot quit"
+          -- crash popup. jdtls still provides full Java LSP without it.
+          enable = false,
           version = '1.59.0',
         },
         mason = {
@@ -881,6 +926,18 @@ require('lazy').setup({
         },
       })
       vim.lsp.enable 'jdtls'
+
+      -- Beef LSP (https://github.com/tomwjerry/beef_lsp) is not in Mason. Built locally
+      -- in ~/src/beef_lsp against ~/src/Beef; /opt/homebrew/bin/BeefLsp wraps it.
+      if vim.fn.executable 'BeefLsp' == 1 then
+        vim.lsp.config('beef_lsp', {
+          cmd = { 'BeefLsp' },
+          filetypes = { 'beef' },
+          root_markers = { 'BeefSpace.toml', 'BeefProj.toml', '.git' },
+          capabilities = capabilities,
+        })
+        vim.lsp.enable 'beef_lsp'
+      end
 
       -- The following loop will configure each server with the capabilities we defined above.
       -- This will ensure that all servers have the same base configuration, but also
@@ -922,10 +979,26 @@ require('lazy').setup({
       {
         '<leader>f',
         function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
+          local opts = { async = true, lsp_format = 'fallback' }
+          local mode = vim.api.nvim_get_mode().mode
+          -- Visual / linewise / blockwise: format only the selected lines.
+          -- prettier has no native range support, so conform formats the whole
+          -- buffer then applies only the diff hunks overlapping this line range.
+          if mode == 'v' or mode == 'V' or mode == '\22' then
+            local s_line = vim.fn.getpos('v')[2]
+            local e_line = vim.fn.getpos('.')[2]
+            if s_line > e_line then
+              s_line, e_line = e_line, s_line
+            end
+            opts.range = {
+              start = { s_line, 0 },
+              ['end'] = { e_line, #vim.fn.getline(e_line) },
+            }
+          end
+          require('conform').format(opts)
         end,
-        mode = '',
-        desc = '[F]ormat buffer',
+        mode = { 'n', 'x' },
+        desc = '[F]ormat selection/buffer',
       },
     },
     opts = {
@@ -1154,12 +1227,14 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    branch = 'master',
+    branch = 'main', -- NOTE: 'master' is obsolete/incompatible with Neovim 0.12+
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    lazy = false,
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = {
+    -- NOTE: the 'main' branch is a full rewrite; it no longer uses
+    -- `nvim-treesitter.configs`. Highlighting/indent are enabled per-buffer below.
+    config = function()
+      local parsers = {
         'bash',
         'c',
         'diff',
@@ -1177,22 +1252,54 @@ require('lazy').setup({
         'elixir',
         'heex',
         'eex',
-      },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
+        'c_sharp', -- also used for beef
+      }
+      require('nvim-treesitter').install(parsers)
+
+      -- Some languages (such as Ruby) depend on vim's regex indent rules instead
+      -- of treesitter's; keep them out of the treesitter indentexpr.
+      local indent_disabled = { ruby = true }
+
+      ---@param buf integer
+      ---@param language string
+      local function treesitter_try_attach(buf, language)
+        if not vim.treesitter.language.add(language) then
+          return
+        end
+        vim.treesitter.start(buf, language)
+
+        local has_indent_query = vim.treesitter.query.get(language, 'indents') ~= nil
+        if has_indent_query and not indent_disabled[language] then
+          vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end
+
+      local available_parsers = require('nvim-treesitter').get_available()
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          local buf, filetype = args.buf, args.match
+          local language = vim.treesitter.language.get_lang(filetype)
+          if not language then
+            return
+          end
+
+          local installed_parsers = require('nvim-treesitter').get_installed 'parsers'
+          if vim.tbl_contains(installed_parsers, language) then
+            treesitter_try_attach(buf, language)
+          elseif vim.tbl_contains(available_parsers, language) then
+            -- Autoinstall languages that are not installed
+            require('nvim-treesitter').install(language):await(function()
+              treesitter_try_attach(buf, language)
+            end)
+          else
+            treesitter_try_attach(buf, language)
+          end
+        end,
+      })
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
