@@ -148,4 +148,25 @@ M.zig = function()
   }
 end
 
+M.hare = function()
+  return {
+    s('dfun', { t 'fn ', i(1, 'name'), t '() ', i(2, 'void'), t { ' = {', '\t' }, i(3), t { '', '};' } }),
+    s('efun', { t 'export fn ', i(1, 'name'), t '() ', i(2, 'void'), t { ' = {', '\t' }, i(3), t { '', '};' } }),
+    s('main', { t { 'export fn main() void = {', '\t' }, i(1), t { '', '};' } }),
+    s('test', { t '@test fn ', i(1, 'name'), t { '() void = {', '\t' }, i(2), t { '', '};' } }),
+    s('if', { t 'if (', i(1), t { ') {', '\t' }, i(2), t { '', '};' } }),
+    s('ife', { t 'if (', i(1), t { ') {', '\t' }, i(2), t { '', '} else {', '\t' }, i(3), t { '', '};' } }),
+    s('for', { t 'for (let ', i(1, 'i'), t ' = 0z; ', i(2, 'i'), t ' < ', i(3, 'n'), t '; ', i(4, 'i'), t { ' += 1) {', '\t' }, i(5), t { '', '};' } }),
+    s('fore', { t 'for (let ', i(1, 'item'), t ' .. ', i(2, 'items'), t { ') {', '\t' }, i(3), t { '', '};' } }),
+    s('match', { t 'match (', i(1), t { ') {', 'case ' }, i(2, 'let v: type'), t { ' =>', '\t' }, i(3), t { '', '};' } }),
+    s('sw', { t 'switch (', i(1), t { ') {', 'case ' }, i(2, 'val'), t { ' =>', '\t' }, i(3), t { '', '};' } }),
+    s('struct', { t 'type ', i(1, 'name'), t { ' = struct {', '\t' }, i(2), t { '', '};' } }),
+    s('enum', { t 'type ', i(1, 'name'), t { ' = enum {', '\t' }, i(2), t { '', '};' } }),
+    s('pr', { t 'fmt::println(', i(1), t ')!;' }),
+    s('prf', { t 'fmt::printfln("', i(1, '{}'), t '", ', i(2), t ')!;' }),
+    s('defer', { t 'defer ', i(1), t ';' }),
+    s('use', { t 'use ', i(1, 'fmt'), t ';' }),
+  }
+end
+
 return M

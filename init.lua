@@ -179,6 +179,25 @@ do
   vim.o.confirm = true
   vim.o.spell = false -- Disabled to improve performance
   vim.o.spelllang = 'en_us'
+
+  -- Hare's bundled runtime files assume the stdlib lives in /usr/src/hare when HAREPATH is unset,
+  -- which breaks `gf` on `use` lines for a /usr/local install. Derive it from the toolchain instead.
+  if not vim.env.HAREPATH and vim.fn.executable 'hare' == 1 then
+    local prefix = vim.fs.dirname(vim.fs.dirname(vim.fn.exepath 'hare'))
+    vim.env.HAREPATH = prefix .. '/src/hare/stdlib:' .. prefix .. '/src/hare/third-party'
+  end
+
+  -- Neovim doesn't know about Beef (https://www.beeflang.org/) out of the box.
+  vim.filetype.add { extension = { bf = 'beef' } }
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'beef',
+    callback = function()
+      vim.bo.commentstring = '// %s'
+      vim.bo.expandtab = false
+      vim.bo.tabstop = 4
+      vim.bo.shiftwidth = 4
+    end,
+  })
 end
 
 -- ============================================================
@@ -895,6 +914,21 @@ do
     vim.lsp.enable(name)
   end
 
+  -- hare-lsp isn't in Mason, so it's kept out of `servers` above. Build it from
+  -- https://sr.ht/~whynothugo/hare-lsp/ and it gets enabled once it's on your PATH.
+  if vim.fn.executable 'hare-lsp' == 1 then vim.lsp.enable 'hare_lsp' end
+
+  -- BeefLsp isn't in Mason or nvim-lspconfig either. `beef-lsp` is a wrapper in ~/.local/bin that runs the
+  -- server built from https://github.com/agorangetek/beef-lsp-macos inside ~/code/Beef/IDE/dist.
+  -- It needs a BeefSpace.toml at the root; it also does formatting (picked up by conform's lsp_format fallback).
+  vim.lsp.config('beef_lsp', {
+    cmd = { 'beef-lsp' },
+    filetypes = { 'beef' },
+    root_markers = { 'BeefSpace.toml' },
+    workspace_required = true,
+  })
+  if vim.fn.executable 'beef-lsp' == 1 then vim.lsp.enable 'beef_lsp' end
+
   require('java').setup {}
 
   vim.lsp.config('jdtls', {
@@ -1005,6 +1039,7 @@ do
     luasnip.add_snippets('lua', snippets.lua())
     luasnip.add_snippets('java', snippets.java())
     luasnip.add_snippets('zig', snippets.zig())
+    luasnip.add_snippets('hare', snippets.hare())
     local snippets_path = vim.fn.getcwd() .. '/snippets.lua'
     if vim.fn.filereadable(snippets_path) == 1 then
       local ok, project_snippets = pcall(dofile, snippets_path)
@@ -1115,11 +1150,16 @@ do
     'java',
     'kotlin',
     'zig',
+    'hare',
+    'c_sharp',
     'elixir',
     'heex',
     'eex',
   }
   require('nvim-treesitter').install(parsers)
+
+  -- There's no Beef parser; its syntax is close enough to C# that the c_sharp one highlights it well.
+  vim.treesitter.language.register('c_sharp', 'beef')
 
   ---@param buf integer
   ---@param language string
