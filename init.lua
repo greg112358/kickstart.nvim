@@ -106,6 +106,11 @@ do
   -- NOTE: You can change these options as you wish!
   --  For more options, you can see `:help option-list`
 
+  -- Disable synchronized output (mode 2026): tmux advertises it but the held
+  -- frames never get flushed in Terminal.app/iTerm2, leaving the screen blank
+  -- until cursor movement forces per-line redraws
+  vim.o.termsync = false
+
   -- Make line numbers default
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
@@ -135,6 +140,9 @@ do
 
   -- Enable undo/redo changes even after closing and reopening a file
   vim.o.undofile = true
+
+  -- Reload files that changed on disk (e.g. after a git branch switch)
+  vim.o.autoread = true
 
   -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
   vim.o.ignorecase = true
@@ -186,18 +194,6 @@ do
     local prefix = vim.fs.dirname(vim.fs.dirname(vim.fn.exepath 'hare'))
     vim.env.HAREPATH = prefix .. '/src/hare/stdlib:' .. prefix .. '/src/hare/third-party'
   end
-
-  -- Neovim doesn't know about Beef (https://www.beeflang.org/) out of the box.
-  vim.filetype.add { extension = { bf = 'beef' } }
-  vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'beef',
-    callback = function()
-      vim.bo.commentstring = '// %s'
-      vim.bo.expandtab = false
-      vim.bo.tabstop = 4
-      vim.bo.shiftwidth = 4
-    end,
-  })
 end
 
 -- ============================================================
@@ -288,6 +284,43 @@ do
     desc = 'Highlight when yanking (copying) text',
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
+  })
+
+  -- Check for external file changes so buffers refresh after a git branch switch.
+  --  `autoread` only reloads when Neovim actually runs a timestamp check, which it
+  --  doesn't do on its own while you sit in a buffer. These events force the check.
+  local checktime_group = vim.api.nvim_create_augroup('kickstart-checktime', { clear = true })
+  vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI', 'TermClose', 'TermLeave' }, {
+    desc = 'Reload buffers changed on disk (e.g. after switching git branches)',
+    group = checktime_group,
+    callback = function()
+      -- `checktime` errors in command-line window; guard against it.
+      if vim.fn.getcmdwintype() == '' then vim.cmd 'checktime' end
+    end,
+  })
+
+  -- Let you know when a buffer was reloaded out from under you.
+  vim.api.nvim_create_autocmd('FileChangedShellPost', {
+    desc = 'Notify when a file was reloaded after an external change',
+    group = checktime_group,
+    callback = function() vim.notify('File changed on disk, buffer reloaded', vim.log.levels.WARN) end,
+  })
+
+  -- Beef (https://www.beeflang.org). No tree-sitter grammar exists; its syntax is
+  -- close enough to C# that the c_sharp parser gives usable highlighting.
+  vim.filetype.add { extension = { bf = 'beef' } }
+  vim.treesitter.language.register('c_sharp', 'beef')
+  vim.api.nvim_create_autocmd('FileType', {
+    desc = 'Beef buffer options',
+    group = vim.api.nvim_create_augroup('kickstart-beef', { clear = true }),
+    pattern = 'beef',
+    callback = function()
+      vim.bo.commentstring = '// %s'
+      vim.bo.cindent = true
+      vim.bo.expandtab = false
+      vim.bo.tabstop = 4
+      vim.bo.shiftwidth = 4
+    end,
   })
 end
 
@@ -918,18 +951,30 @@ do
   -- https://sr.ht/~whynothugo/hare-lsp/ and it gets enabled once it's on your PATH.
   if vim.fn.executable 'hare-lsp' == 1 then vim.lsp.enable 'hare_lsp' end
 
-  -- BeefLsp isn't in Mason or nvim-lspconfig either. `beef-lsp` is a wrapper in ~/.local/bin that runs the
-  -- server built from https://github.com/agorangetek/beef-lsp-macos inside ~/code/Beef/IDE/dist.
+  -- Beef LSP isn't in Mason or nvim-lspconfig either; each machine has a locally built server behind a wrapper:
+  --   Linux: ~/.local/bin/beef-lsp runs ~/code/Beef/IDE/dist/BeefLsp (https://github.com/agorangetek/beef-lsp-macos)
+  --   macOS: /opt/homebrew/bin/BeefLsp wraps ~/src/beef_lsp built against ~/src/Beef (https://github.com/tomwjerry/beef_lsp)
   -- It needs a BeefSpace.toml at the root; it also does formatting (picked up by conform's lsp_format fallback).
-  vim.lsp.config('beef_lsp', {
-    cmd = { 'beef-lsp' },
-    filetypes = { 'beef' },
-    root_markers = { 'BeefSpace.toml' },
-    workspace_required = true,
-  })
-  if vim.fn.executable 'beef-lsp' == 1 then vim.lsp.enable 'beef_lsp' end
+  local beef_lsp_cmd = vim.iter({ 'beef-lsp', 'BeefLsp' }):find(function(cmd) return vim.fn.executable(cmd) == 1 end)
+  if beef_lsp_cmd then
+    vim.lsp.config('beef_lsp', {
+      cmd = { beef_lsp_cmd },
+      filetypes = { 'beef' },
+      root_markers = { 'BeefSpace.toml' },
+      workspace_required = true,
+    })
+    vim.lsp.enable 'beef_lsp'
+  end
 
-  require('java').setup {}
+  require('java').setup {
+    spring_boot_tools = {
+      -- Disabled: the Spring Boot language server ships as a Spring Boot exec jar
+      -- whose main class (BootLanguageServerBootApp) lives in BOOT-INF/classes,
+      -- which nvim-java's launcher can't resolve -> "Client spring-boot quit"
+      -- crash popup. jdtls still provides full Java LSP without it.
+      enable = false,
+    },
+  }
 
   vim.lsp.config('jdtls', {
     --your custom nvim-java configuration goes here
@@ -1004,7 +1049,25 @@ do
     },
   }
 
-  vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
+  vim.keymap.set({ 'n', 'x' }, '<leader>f', function()
+    local opts = { async = true }
+    local mode = vim.api.nvim_get_mode().mode
+    -- Visual / linewise / blockwise: format only the selected lines.
+    -- prettier has no native range support, so conform formats the whole
+    -- buffer then applies only the diff hunks overlapping this line range.
+    if mode == 'v' or mode == 'V' or mode == '\22' then
+      local s_line = vim.fn.getpos('v')[2]
+      local e_line = vim.fn.getpos('.')[2]
+      if s_line > e_line then
+        s_line, e_line = e_line, s_line
+      end
+      opts.range = {
+        start = { s_line, 0 },
+        ['end'] = { e_line, #vim.fn.getline(e_line) },
+      }
+    end
+    require('conform').format(opts)
+  end, { desc = '[F]ormat selection/buffer' })
 end
 
 -- ============================================================
@@ -1151,15 +1214,12 @@ do
     'kotlin',
     'zig',
     'hare',
-    'c_sharp',
     'elixir',
     'heex',
     'eex',
+    'c_sharp', -- also used for beef
   }
   require('nvim-treesitter').install(parsers)
-
-  -- There's no Beef parser; its syntax is close enough to C# that the c_sharp one highlights it well.
-  vim.treesitter.language.register('c_sharp', 'beef')
 
   ---@param buf integer
   ---@param language string
