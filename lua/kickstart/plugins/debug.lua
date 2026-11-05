@@ -179,11 +179,34 @@ require('dap-go').setup {
 
 -- Beef: debug with lldb-dap (Fedora's `lldb` package, or Xcode/Homebrew LLVM on macOS). Beef emits DWARF, so LLDB understands it.
 -- Build first with `BeefBuild` in the workspace; the Debug output lands in build/Debug_<Platform>/<Project>/<Project>.
+-- macOS Command Line Tools ship lldb-dap but don't put it on PATH; xcrun finds it.
+local lldb_dap = vim.fn.exepath 'lldb-dap'
+if lldb_dap == '' and vim.fn.has 'mac' == 1 then lldb_dap = vim.trim(vim.fn.system { 'xcrun', '-f', 'lldb-dap' }) end
 dap.adapters.lldb = {
   type = 'executable',
-  command = vim.fn.exepath 'lldb-dap' ~= '' and vim.fn.exepath 'lldb-dap' or 'lldb-dap',
+  command = lldb_dap ~= '' and lldb_dap or 'lldb-dap',
   name = 'lldb',
 }
+
+-- C/C++: build with -g first. Prompts for the binary (and args), defaulting to <cwd>/<cwd name>.
+dap.configurations.c = {
+  {
+    name = 'Launch executable',
+    type = 'lldb',
+    request = 'launch',
+    program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/' .. vim.fs.basename(vim.fn.getcwd()), 'file') end,
+    args = function() return vim.split(vim.fn.input 'Arguments: ', ' ', { trimempty = true }) end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+  },
+  {
+    name = 'Attach to process',
+    type = 'lldb',
+    request = 'attach',
+    pid = function() return require('dap.utils').pick_process() end,
+  },
+}
+dap.configurations.cpp = dap.configurations.c
 
 local function beef_default_program()
   local root = vim.fs.root(0, 'BeefSpace.toml') or vim.fn.getcwd()

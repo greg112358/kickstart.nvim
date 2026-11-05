@@ -951,6 +951,25 @@ do
   -- https://sr.ht/~whynothugo/hare-lsp/ and it gets enabled once it's on your PATH.
   if vim.fn.executable 'hare-lsp' == 1 then vim.lsp.enable 'hare_lsp' end
 
+  -- clangd is kept out of `servers` so Mason doesn't install upstream LLVM's build; the system one
+  -- (Apple's on macOS) already knows the SDK include paths. Projects need a compile_commands.json
+  -- (CMake: -DCMAKE_EXPORT_COMPILE_COMMANDS=ON, Make: `bear -- make`) or compile_flags.txt at the root.
+  if vim.fn.executable 'clangd' == 1 then
+    vim.lsp.config('clangd', {
+      cmd = { 'clangd', '--background-index', '--clang-tidy', '--header-insertion=iwyu', '--completion-style=detailed' },
+    })
+    vim.lsp.enable 'clangd'
+    vim.api.nvim_create_autocmd('LspAttach', {
+      group = vim.api.nvim_create_augroup('kickstart-clangd-attach', { clear = true }),
+      callback = function(event)
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if client and client.name == 'clangd' then
+          vim.keymap.set('n', '<leader>ch', '<cmd>LspClangdSwitchSourceHeader<cr>', { desc = 'Switch source/header', buf = event.buf })
+        end
+      end,
+    })
+  end
+
   -- Beef LSP isn't in Mason or nvim-lspconfig either; each machine has a locally built server behind a wrapper:
   --   Linux: ~/.local/bin/beef-lsp runs ~/code/Beef/IDE/dist/BeefLsp (https://github.com/agorangetek/beef-lsp-macos)
   --   macOS: /opt/homebrew/bin/BeefLsp wraps ~/src/beef_lsp built against ~/src/Beef (https://github.com/tomwjerry/beef_lsp)
@@ -1033,6 +1052,8 @@ do
       typescriptreact = { 'prettier' },
       javascriptreact = { 'prettier' },
       java = { 'clang-format' },
+      c = { 'clang-format' },
+      cpp = { 'clang-format' },
       kotlin = { 'prettier' },
       json = { 'prettier' },
       css = { 'prettier' },
@@ -1201,6 +1222,9 @@ do
   local parsers = {
     'bash',
     'c',
+    'cpp',
+    'make',
+    'cmake',
     'diff',
     'html',
     'lua',
