@@ -176,3 +176,36 @@ require('dap-go').setup {
     detached = vim.fn.has 'win32' == 0,
   },
 }
+
+-- Beef: debug with lldb-dap (Fedora's `lldb` package, or Xcode/Homebrew LLVM on macOS). Beef emits DWARF, so LLDB understands it.
+-- Build first with `BeefBuild` in the workspace; the Debug output lands in build/Debug_<Platform>/<Project>/<Project>.
+dap.adapters.lldb = {
+  type = 'executable',
+  command = vim.fn.exepath 'lldb-dap' ~= '' and vim.fn.exepath 'lldb-dap' or 'lldb-dap',
+  name = 'lldb',
+}
+
+local function beef_default_program()
+  local root = vim.fs.root(0, 'BeefSpace.toml') or vim.fn.getcwd()
+  local project
+  local space = io.open(root .. '/BeefSpace.toml')
+  if space then
+    project = space:read('*a'):match 'StartupProject%s*=%s*"([^"]+)"'
+    space:close()
+  end
+  project = project or vim.fs.basename(root)
+  local platform = vim.fn.has 'mac' == 1 and 'macOS' or 'Linux64'
+  return root .. '/build/Debug_' .. platform .. '/' .. project .. '/' .. project
+end
+
+dap.configurations.beef = {
+  {
+    name = 'Launch Beef startup project',
+    type = 'lldb',
+    request = 'launch',
+    program = function() return vim.fn.input('Path to executable: ', beef_default_program(), 'file') end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = {},
+  },
+}

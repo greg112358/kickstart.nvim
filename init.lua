@@ -187,6 +187,13 @@ do
   vim.o.confirm = true
   vim.o.spell = false -- Disabled to improve performance
   vim.o.spelllang = 'en_us'
+
+  -- Hare's bundled runtime files assume the stdlib lives in /usr/src/hare when HAREPATH is unset,
+  -- which breaks `gf` on `use` lines for a /usr/local install. Derive it from the toolchain instead.
+  if not vim.env.HAREPATH and vim.fn.executable 'hare' == 1 then
+    local prefix = vim.fs.dirname(vim.fs.dirname(vim.fn.exepath 'hare'))
+    vim.env.HAREPATH = prefix .. '/src/hare/stdlib:' .. prefix .. '/src/hare/third-party'
+  end
 end
 
 -- ============================================================
@@ -310,6 +317,9 @@ do
     callback = function()
       vim.bo.commentstring = '// %s'
       vim.bo.cindent = true
+      vim.bo.expandtab = false
+      vim.bo.tabstop = 4
+      vim.bo.shiftwidth = 4
     end,
   })
 end
@@ -937,6 +947,25 @@ do
     vim.lsp.enable(name)
   end
 
+  -- hare-lsp isn't in Mason, so it's kept out of `servers` above. Build it from
+  -- https://sr.ht/~whynothugo/hare-lsp/ and it gets enabled once it's on your PATH.
+  if vim.fn.executable 'hare-lsp' == 1 then vim.lsp.enable 'hare_lsp' end
+
+  -- Beef LSP isn't in Mason or nvim-lspconfig either; each machine has a locally built server behind a wrapper:
+  --   Linux: ~/.local/bin/beef-lsp runs ~/code/Beef/IDE/dist/BeefLsp (https://github.com/agorangetek/beef-lsp-macos)
+  --   macOS: /opt/homebrew/bin/BeefLsp wraps ~/src/beef_lsp built against ~/src/Beef (https://github.com/tomwjerry/beef_lsp)
+  -- It needs a BeefSpace.toml at the root; it also does formatting (picked up by conform's lsp_format fallback).
+  local beef_lsp_cmd = vim.iter({ 'beef-lsp', 'BeefLsp' }):find(function(cmd) return vim.fn.executable(cmd) == 1 end)
+  if beef_lsp_cmd then
+    vim.lsp.config('beef_lsp', {
+      cmd = { beef_lsp_cmd },
+      filetypes = { 'beef' },
+      root_markers = { 'BeefSpace.toml' },
+      workspace_required = true,
+    })
+    vim.lsp.enable 'beef_lsp'
+  end
+
   require('java').setup {
     spring_boot_tools = {
       -- Disabled: the Spring Boot language server ships as a Spring Boot exec jar
@@ -973,17 +1002,6 @@ do
     },
   })
   vim.lsp.enable 'jdtls'
-
-  -- Beef LSP (https://github.com/tomwjerry/beef_lsp) is not in Mason. Built locally
-  -- in ~/src/beef_lsp against ~/src/Beef; /opt/homebrew/bin/BeefLsp wraps it.
-  if vim.fn.executable 'BeefLsp' == 1 then
-    vim.lsp.config('beef_lsp', {
-      cmd = { 'BeefLsp' },
-      filetypes = { 'beef' },
-      root_markers = { 'BeefSpace.toml', 'BeefProj.toml', '.git' },
-    })
-    vim.lsp.enable 'beef_lsp'
-  end
 end
 
 -- ============================================================
@@ -1084,6 +1102,7 @@ do
     luasnip.add_snippets('lua', snippets.lua())
     luasnip.add_snippets('java', snippets.java())
     luasnip.add_snippets('zig', snippets.zig())
+    luasnip.add_snippets('hare', snippets.hare())
     local snippets_path = vim.fn.getcwd() .. '/snippets.lua'
     if vim.fn.filereadable(snippets_path) == 1 then
       local ok, project_snippets = pcall(dofile, snippets_path)
@@ -1194,6 +1213,7 @@ do
     'java',
     'kotlin',
     'zig',
+    'hare',
     'elixir',
     'heex',
     'eex',
