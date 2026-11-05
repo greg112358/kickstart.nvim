@@ -1323,6 +1323,23 @@ do
       require 'lightgrayscale'
     end
   end, { desc = '[T]oggle [T]heme' })
+
+  vim.pack.add { gh 'sindrets/diffview.nvim' }
+  require('diffview').setup {}
+  local function toggle_diffview(args)
+    if require('diffview.lib').get_current_view() then
+      vim.cmd 'DiffviewClose'
+    else
+      vim.cmd('DiffviewOpen ' .. args)
+    end
+  end
+  vim.keymap.set('n', '<leader>tg', function() toggle_diffview '' end, { desc = '[T]oggle [G]it diff view' })
+  vim.keymap.set('n', '<leader>tp', function()
+    local default_branch = vim.trim(vim.fn.system 'git symbolic-ref --short refs/remotes/origin/HEAD')
+    if vim.v.shell_error ~= 0 then default_branch = 'origin/main' end
+    -- Three-dot diffs against the merge-base, matching what a pull request shows.
+    toggle_diffview(default_branch .. '...HEAD')
+  end, { desc = '[T]oggle [P]ull request diff view' })
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
