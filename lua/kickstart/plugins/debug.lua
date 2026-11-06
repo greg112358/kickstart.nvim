@@ -232,3 +232,26 @@ dap.configurations.beef = {
     args = {},
   },
 }
+
+-- C/C++: debug with the same lldb-dap adapter. Build with debug info first (-g -O0).
+dap.configurations.c = {
+  {
+    name = 'Launch executable',
+    type = 'lldb',
+    request = 'launch',
+    program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file') end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = function()
+      local input = vim.fn.input 'Program arguments: '
+      return input ~= '' and vim.split(input, ' ', { trimempty = true }) or {}
+    end,
+  },
+  {
+    name = 'Attach to process',
+    type = 'lldb',
+    request = 'attach',
+    pid = require('dap.utils').pick_process,
+  },
+}
+dap.configurations.cpp = dap.configurations.c
