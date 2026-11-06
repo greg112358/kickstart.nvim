@@ -875,7 +875,19 @@ do
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
-    -- clangd = {},
+    -- C/C++: clangd reads compile_commands.json (CMake: -DCMAKE_EXPORT_COMPILE_COMMANDS=ON,
+    -- Make: `bear -- make`) or a compile_flags.txt in the project root for include paths/flags.
+    clangd = {
+      cmd = {
+        'clangd',
+        '--background-index',
+        '--clang-tidy',
+        '--header-insertion=iwyu',
+        '--completion-style=detailed',
+        '--function-arg-placeholders=0',
+        '--fallback-style=llvm',
+      },
+    },
     -- gopls = {},
     -- pyright = {},
     -- tsc = {},
@@ -981,6 +993,18 @@ do
     vim.lsp.enable(name)
   end
 
+  -- clangd: jump between foo.c and foo.h. (Kept out of clangd's on_attach, which would
+  -- replace nvim-lspconfig's own on_attach that defines :LspClangdSwitchSourceHeader.)
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('kickstart-clangd', { clear = true }),
+    callback = function(event)
+      local client = vim.lsp.get_client_by_id(event.data.client_id)
+      if client and client.name == 'clangd' then
+        vim.keymap.set('n', 'grh', '<cmd>LspClangdSwitchSourceHeader<cr>', { buffer = event.buf, desc = 'C: Switch source/[H]eader' })
+      end
+    end,
+  })
+
   -- hare-lsp isn't in Mason, so it's kept out of `servers` above. Build it from
   -- https://sr.ht/~whynothugo/hare-lsp/ and it gets enabled once it's on your PATH.
   if vim.fn.executable 'hare-lsp' == 1 then vim.lsp.enable 'hare_lsp' end
@@ -1073,6 +1097,8 @@ do
       typescriptreact = { 'prettier' },
       javascriptreact = { 'prettier' },
       java = { 'clang-format' },
+      c = { 'clang-format' },
+      cpp = { 'clang-format' },
       kotlin = { 'prettier' },
       json = { 'prettier' },
       css = { 'prettier' },
@@ -1241,6 +1267,10 @@ do
   local parsers = {
     'bash',
     'c',
+    'cpp',
+    'make',
+    'cmake',
+    'doxygen',
     'diff',
     'html',
     'lua',
