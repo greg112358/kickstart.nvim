@@ -322,6 +322,22 @@ do
       vim.bo.shiftwidth = 4
     end,
   })
+
+  -- ReasonML (https://reasonml.github.io). Syntax/indent come from vim-reason-plus
+  -- (section 4), LSP + formatting from ocamllsp (section 6). Neither Neovim nor
+  -- nvim-treesitter knows Reason, so register the filetype here.
+  vim.filetype.add { extension = { re = 'reason', rei = 'reason' } }
+  vim.api.nvim_create_autocmd('FileType', {
+    desc = 'Reason buffer options',
+    group = vim.api.nvim_create_augroup('kickstart-reason', { clear = true }),
+    pattern = 'reason',
+    callback = function()
+      vim.bo.commentstring = '/* %s */'
+      vim.bo.expandtab = true
+      vim.bo.tabstop = 2
+      vim.bo.shiftwidth = 2
+    end,
+  })
 end
 
 -- ============================================================
@@ -517,6 +533,24 @@ do
 
   vim.pack.add { gh 'numToStr/Comment.nvim' }
   require('Comment').setup()
+
+  -- Reason syntax highlighting + indentation (no tree-sitter grammar exists)
+  vim.pack.add { gh 'reasonml-editor/vim-reason-plus' }
+
+  -- [[ snipe.nvim ]]
+  --  Vimium-style buffer menu: `gb` opens it, then type the hint letters to jump.
+  --  Inside the menu: D close buffer, V vsplit, H split, J/K page, <esc> cancel.
+  vim.pack.add { gh 'leath-dub/snipe.nvim' }
+  require('snipe').setup {
+    ui = {
+      position = 'center',
+      open_win_override = { border = 'rounded' },
+      preselect_current = true,
+      text_align = 'file-first',
+    },
+    sort = 'last',
+  }
+  vim.keymap.set('n', 'gb', function() require('snipe').open_buffer_menu() end, { desc = 'Snipe [B]uffer menu' })
 
   vim.pack.add {
     gh 'nvim-lua/plenary.nvim',
@@ -950,6 +984,12 @@ do
   -- hare-lsp isn't in Mason, so it's kept out of `servers` above. Build it from
   -- https://sr.ht/~whynothugo/hare-lsp/ and it gets enabled once it's on your PATH.
   if vim.fn.executable 'hare-lsp' == 1 then vim.lsp.enable 'hare_lsp' end
+
+  -- ocamllsp serves Reason (and OCaml). It must come from the same opam switch as the
+  -- project's compiler, so it's installed with opam rather than Mason:
+  --   opam install ocaml-lsp-server reason ocamlformat dune
+  -- Formatting of .re files goes through refmt (from `reason`) via conform's lsp_format fallback.
+  if vim.fn.executable 'ocamllsp' == 1 then vim.lsp.enable 'ocamllsp' end
 
   -- Beef LSP isn't in Mason or nvim-lspconfig either; each machine has a locally built server behind a wrapper:
   --   Linux: ~/.local/bin/beef-lsp runs ~/code/Beef/IDE/dist/BeefLsp (https://github.com/agorangetek/beef-lsp-macos)
